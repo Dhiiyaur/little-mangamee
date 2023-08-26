@@ -31,8 +31,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		})
 	})
 
-	mangaRouter := router.Group("api/manga")
-	mangaRouter.GET("index/:source/:page", mangaController.Index)
-
+	router.GET("api/manga/index", mangaController.Index)
 	router.ServeHTTP(w, r)
 }
