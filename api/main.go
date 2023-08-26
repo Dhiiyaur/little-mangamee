@@ -1,4 +1,4 @@
-package handler
+package api
 
 import (
 	"net/http"
@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func VercelHandler(w http.ResponseWriter, r *http.Request) {
+func Handler(w http.ResponseWriter, r *http.Request) {
 	// Create a Gin router
 	router := gin.New()
 	router.Use(cors.Default())
