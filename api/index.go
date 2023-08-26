@@ -8,6 +8,7 @@ import (
 
 	"little_mangamee/controller"
 	log "little_mangamee/logger"
+	"little_mangamee/middleware"
 	"little_mangamee/service"
 )
 
@@ -16,7 +17,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	log.InitZerolog()
 
 	router := gin.New()
-	router.Use(Logger(log.Logger))
+	router.Use(middleware.Logger(log.Logger))
 	router.Use(cors.Default())
 	router.Use(gin.Recovery())
 
