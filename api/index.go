@@ -32,14 +32,26 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		})
 	})
 
-	// router.Static("/static", "docs")
-	// router.GET("/static/*filepath", func(c *gin.Context) {
-	// 	staticHandler := http.FileServer(http.Dir("docs"))
-	// 	http.StripPrefix("/static/", staticHandler).ServeHTTP(c.Writer, c.Request)
-	// })
+	router.GET("/static/mangamee_collection.yml", func(c *gin.Context) {
+		Colection, err := docs.Colection.ReadFile("mangamee_collection.yml")
+		if err != nil {
+			c.String(http.StatusInternalServerError, "Error reading template")
+			return
+		}
+		c.Data(http.StatusOK, "text/html", Colection)
+	})
+
+	router.GET("/static/redoc.standalone.js", func(c *gin.Context) {
+		Colection, err := docs.RedocJS.ReadFile("redoc.standalone.js")
+		if err != nil {
+			c.String(http.StatusInternalServerError, "Error reading template")
+			return
+		}
+		c.Data(http.StatusOK, "text/html", Colection)
+	})
 
 	router.GET("/docs/*any", func(c *gin.Context) {
-		htmlTemplate, err := docs.Colection.ReadFile("index.html")
+		htmlTemplate, err := docs.HtmlBase.ReadFile("index.html")
 		if err != nil {
 			c.String(http.StatusInternalServerError, "Error reading template")
 			return
