@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"little_mangamee/controller"
+	"little_mangamee/docs"
 	log "little_mangamee/logger"
 	"little_mangamee/middleware"
 	"little_mangamee/service"
@@ -31,14 +32,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		})
 	})
 
-	router.Static("/static", "docs")
+	// router.Static("/static", "docs")
 	// router.GET("/static/*filepath", func(c *gin.Context) {
 	// 	staticHandler := http.FileServer(http.Dir("docs"))
 	// 	http.StripPrefix("/static/", staticHandler).ServeHTTP(c.Writer, c.Request)
 	// })
 
 	router.GET("/docs", func(c *gin.Context) {
-		c.File("docs/index.html")
+		htmlTemplate, err := docs.HtmlBase.ReadFile("index.html")
+		if err != nil {
+			c.String(http.StatusInternalServerError, "Error reading template")
+			return
+		}
+		c.Data(http.StatusOK, "text/html", htmlTemplate)
 	})
 
 	router.GET("api/manga/proxy", mangaController.MangabatProxy)
