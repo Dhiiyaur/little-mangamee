@@ -38,8 +38,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	// 	http.StripPrefix("/static/", staticHandler).ServeHTTP(c.Writer, c.Request)
 	// })
 
-	router.GET("/docs", func(c *gin.Context) {
-		htmlTemplate, err := docs.HtmlBase.ReadFile("index.html")
+	router.GET("/docs/*any", func(c *gin.Context) {
+		htmlTemplate, err := docs.Colection.ReadFile("index.html")
 		if err != nil {
 			c.String(http.StatusInternalServerError, "Error reading template")
 			return

@@ -36,3 +36,13 @@ func Logger(log zerolog.Logger) gin.HandlerFunc {
 			Send()
 	}
 }
+
+// func MustFS(staticFS fs.FS) http.FileSystem {
+// 	sub, err := fs.Sub(staticFS, "static")
+
+// 	if err != nil {
+// 		panic(err)
+// 	}
+
+// 	return http.FS(sub)
+// }

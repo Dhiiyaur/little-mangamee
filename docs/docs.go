@@ -11,6 +11,9 @@ var HtmlBase embed.FS
 //go:embed mangamee_collection.yml
 var Colection embed.FS
 
+//go:embed redoc.standalone.js
+var RedocJS embed.FS
+
 func GetTemplates() (*template.Template, error) {
 	allTemplates, err := template.ParseFS(HtmlBase, "docs/*.html")
 	if err != nil {
