@@ -2,8 +2,11 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"little_mangamee/entity"
 	log "little_mangamee/logger"
+	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/gocolly/colly"
@@ -13,6 +16,32 @@ type mangaServiceImpl struct{}
 
 func NewMangaService() MangaService {
 	return &mangaServiceImpl{}
+}
+
+func (m *mangaServiceImpl) MangabatSearch(ctx context.Context, search string) ([]entity.SearchData, error) {
+
+	var returnData []entity.SearchData
+
+	c := colly.NewCollector()
+
+	c.OnHTML(".list-story-item", func(e *colly.HTMLElement) {
+
+		tempLastChapter := strings.Split(e.ChildAttr("div > a:nth-child(2)", "href"), "-")
+		tempMangaID := strings.Split(e.ChildAttr("a.item-img", "href"), "/")
+
+		returnData = append(returnData, entity.SearchData{
+			Title:       e.ChildAttr("img", "alt"),
+			Id:          tempMangaID[len(tempMangaID)-1],
+			Cover:       e.ChildAttr("img", "src"),
+			LastChapter: tempLastChapter[len(tempLastChapter)-1],
+		})
+	})
+
+	if err := c.Visit("https://m.mangabat.com/search/manga/" + search); err != nil {
+		return returnData, err
+	}
+
+	return returnData, nil
 }
 
 func (m *mangaServiceImpl) MangabatIndex(ctx context.Context, pageNumber string) ([]entity.IndexData, error) {
@@ -40,9 +69,141 @@ func (m *mangaServiceImpl) MangabatIndex(ctx context.Context, pageNumber string)
 	}
 	return returnData, nil
 }
+func (m *mangaServiceImpl) MangabatDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
+
+	var returnData entity.DetailData
+	var chapters []entity.Chapter
+
+	c := colly.NewCollector()
+
+	c.OnHTML(".panel-story-info", func(e *colly.HTMLElement) {
+
+		returnData.Cover = e.ChildAttr("span > img", "src")
+		returnData.Title = e.ChildText("div.story-info-right > h1")
+		returnData.Summary = e.ChildText("div.panel-story-info-description")
+
+	})
+
+	c.OnHTML(".chapter-name", func(e *colly.HTMLElement) {
+
+		tempMangaID := strings.Split(e.Attr("href"), "/")
+		tempMangaName := strings.Split(e.Attr("href"), "-")
+
+		chapters = append(chapters, entity.Chapter{
+			Name: tempMangaName[len(tempMangaName)-1],
+			Id:   tempMangaID[len(tempMangaID)-1],
+		})
+
+	})
+
+	if err := c.Visit("https://readmangabat.com/" + mangaId + "/"); err != nil {
+		return returnData, err
+	}
+
+	returnData.Chapters = chapters
+	returnData.OriginalServer = "https://readmangabat.com/" + mangaId + "/"
+	return returnData, nil
+}
+func (m *mangaServiceImpl) MangabatChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
+
+	var data entity.ChapterData
+	var chapters []entity.Chapter
+
+	c := colly.NewCollector()
+
+	c.OnHTML(".chapter-name", func(e *colly.HTMLElement) {
+
+		tempMangaID := strings.Split(e.Attr("href"), "/")
+		tempMangaName := strings.Split(e.Attr("href"), "-")
+
+		chapters = append(chapters, entity.Chapter{
+			Name: tempMangaName[len(tempMangaName)-1],
+			Id:   tempMangaID[len(tempMangaID)-1],
+		})
+
+	})
+
+	if err := c.Visit("https://readmangabat.com/" + mangaId + "/"); err != nil {
+		log.Info().Err(err)
+		return data, err
+	}
+
+	data.Chapters = chapters
+	data.OriginalServer = "https://readmangabat.com/" + mangaId
+	return data, nil
+}
+func (m *mangaServiceImpl) MangabatImage(ctx context.Context, chapterId string) (entity.ImageData, error) {
+
+	var returnData entity.ImageData
+	var dataImages []entity.Image
+	var name string
+
+	c := colly.NewCollector()
+
+	c.OnHTML(".img-content", func(e *colly.HTMLElement) {
+
+		// fmt.Println(e.Attr("src"))
+		api := "https://little-mangamee.vercel.app/api/manga/"
+		dataImages = append(dataImages, entity.Image{
+			// Image: fmt.Sprintf("%vproxy?id=%v", "https://api.mangamee.space/manga/", e.Attr("src")),
+			Image: fmt.Sprintf("%vproxy?id=%v", api, e.Attr("src")),
+		})
+
+	})
+
+	if err := c.Visit("https://readmangabat.com/" + chapterId + "/"); err != nil {
+		return returnData, err
+	}
+
+	re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
+	if strings.Contains(chapterId, "chap") {
+		tmp := strings.Split(chapterId, "chap")
+		name = re.FindAllString(tmp[len(tmp)-1], -1)[0]
+	} else {
+		name = re.FindAllString(chapterId, -1)[0]
+	}
+
+	returnData.OriginalServer = "https://readmangabat.com/" + chapterId + "/"
+	returnData.ChapterName = name
+	returnData.Images = dataImages
+
+	return returnData, nil
+}
 
 //
 
+func (m *mangaServiceImpl) MangareadSearch(ctx context.Context, search string) ([]entity.SearchData, error) {
+
+	var returnData []entity.SearchData
+
+	c := colly.NewCollector()
+	c.OnHTML(".row.c-tabs-item__content", func(e *colly.HTMLElement) {
+
+		var lastChapter string
+		checkChapter := strings.Split(e.ChildText("span.font-meta.chapter > a"), " ")
+
+		if len(checkChapter) > 2 {
+			lastChapter = checkChapter[len(checkChapter)-2]
+		} else {
+			lastChapter = checkChapter[len(checkChapter)-1]
+		}
+
+		returnData = append(returnData, entity.SearchData{
+			Cover:          e.ChildAttr("a > img", "data-src"),
+			Title:          e.ChildAttr("a", "title"),
+			LastChapter:    lastChapter,
+			Id:             strings.Split(e.ChildAttr("a", "href"), "/")[4],
+			OriginalServer: "https://www.mangaread.org/?s=" + search + "&post_type=wp-manga",
+		})
+
+	})
+
+	if err := c.Visit("https://www.mangaread.org/?s=" + search + "&post_type=wp-manga"); err != nil {
+		return returnData, err
+	}
+
+	return returnData, nil
+}
 func (m *mangaServiceImpl) MangareadIndex(ctx context.Context, pageNumber string) ([]entity.IndexData, error) {
 
 	var returnData []entity.IndexData
@@ -74,9 +235,126 @@ func (m *mangaServiceImpl) MangareadIndex(ctx context.Context, pageNumber string
 
 	return returnData, nil
 }
+func (m *mangaServiceImpl) MangareadDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
+
+	var returnData entity.DetailData
+	var chapters []entity.Chapter
+	limit := 0
+
+	c := colly.NewCollector()
+
+	c.OnHTML(".post-title", func(e *colly.HTMLElement) {
+
+		if limit == 0 {
+			returnData.Title = strings.Split(e.ChildText("h1"), "  ")[0]
+		}
+		limit++
+	})
+
+	c.OnHTML(".summary_image", func(e *colly.HTMLElement) {
+		returnData.Cover = e.ChildAttr("img", "data-src")
+	})
+
+	c.OnHTML(".summary__content", func(e *colly.HTMLElement) {
+		returnData.Summary = e.ChildText("p")
+	})
+
+	c.OnHTML(".wp-manga-chapter", func(e *colly.HTMLElement) {
+
+		re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
+		tempName := strings.ReplaceAll(re.FindAllString(e.ChildText("a"), -1)[0], "-", "")
+
+		chapters = append(chapters, entity.Chapter{
+			Name: tempName,
+			Id:   strings.Split(e.ChildAttr("a", "href"), "/")[5],
+		})
+	})
+
+	if err := c.Visit("https://www.mangaread.org/manga/" + mangaId); err != nil {
+		return returnData, err
+	}
+
+	returnData.Chapters = chapters
+	returnData.OriginalServer = "https://www.mangaread.org/manga/" + mangaId
+
+	return returnData, nil
+}
+func (m *mangaServiceImpl) MangareadChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
+
+	var data entity.ChapterData
+	var chapters []entity.Chapter
+
+	c := colly.NewCollector()
+
+	c.OnHTML(".wp-manga-chapter", func(e *colly.HTMLElement) {
+
+		re := regexp.MustCompile(`\d+`)
+		tempName := re.FindAllString(e.ChildText("a"), -1)[0]
+
+		chapters = append(chapters, entity.Chapter{
+			Name: tempName,
+			Id:   strings.Split(e.ChildAttr("a", "href"), "/")[5],
+		})
+	})
+
+	if err := c.Visit("https://www.mangaread.org/manga/" + mangaId); err != nil {
+		log.Info().Err(err)
+		return data, err
+	}
+
+	data.Chapters = chapters
+	data.OriginalServer = "https://www.mangaread.org/manga/" + mangaId
+	return data, nil
+}
+func (m *mangaServiceImpl) MangareadImage(ctx context.Context, mangaId string, chapterId string) (entity.ImageData, error) {
+
+	var returnData entity.ImageData
+	var dataImages []entity.Image
+	c := colly.NewCollector()
+
+	c.OnHTML(".wp-manga-chapter-img", func(e *colly.HTMLElement) {
+
+		dataImages = append(dataImages, entity.Image{
+			Image: "https://" + strings.Split(e.Attr("data-src"), "//")[1],
+		})
+
+	})
+	if err := c.Visit("https://www.mangaread.org/manga/" + mangaId + "/" + chapterId); err != nil {
+		return returnData, err
+	}
+
+	re := regexp.MustCompile(`\d+`)
+
+	returnData.OriginalServer = "https://www.mangaread.org/manga/" + mangaId + "/" + chapterId
+	returnData.ChapterName = re.FindAllString(chapterId, -1)[0]
+	returnData.Images = dataImages
+	return returnData, nil
+}
 
 //
 
+func (m *mangaServiceImpl) MangatownSearch(ctx context.Context, search string) ([]entity.SearchData, error) {
+
+	var returnData []entity.SearchData
+	c := colly.NewCollector()
+	c.OnHTML(".manga_pic_list > li", func(e *colly.HTMLElement) {
+
+		mangaCoverCheck := strings.Replace(e.ChildAttr("a.manga_cover > img", "src"), "https://fmcdn.mangahere.com/", "http://fmcdn.mangatown.com/", -1)
+		returnData = append(returnData, entity.SearchData{
+			Cover:          mangaCoverCheck,
+			Title:          e.ChildAttr("a.manga_cover", "title"),
+			Id:             strings.Split(e.ChildAttr("a.manga_cover", "href"), "/")[2],
+			OriginalServer: "https://www.mangatown.com/search?name=" + search,
+		})
+
+	})
+
+	if err := c.Visit("https://www.mangatown.com/search?name=" + search); err != nil {
+		return returnData, err
+	}
+
+	return returnData, nil
+}
 func (m *mangaServiceImpl) MangatownIndex(ctx context.Context, pageNumber string) ([]entity.IndexData, error) {
 
 	var returnData []entity.IndexData
@@ -109,9 +387,204 @@ func (m *mangaServiceImpl) MangatownIndex(ctx context.Context, pageNumber string
 
 	return returnData, nil
 }
+func (m *mangaServiceImpl) MangatownDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
 
-//
+	var returnData entity.DetailData
+	var chapters []entity.Chapter
 
+	c := colly.NewCollector()
+
+	c.OnHTML(".article_content", func(e *colly.HTMLElement) {
+
+		mangaCoverCheck := strings.Replace(e.ChildAttr("div.detail_info.clearfix > img", "src"), "https://fmcdn.mangahere.com/", "http://fmcdn.mangatown.com/", -1)
+
+		returnData.Title = e.ChildText("h1.title-top")
+		returnData.Cover = mangaCoverCheck
+		returnData.Summary = e.ChildText("div.detail_info.clearfix > ul > li > span")
+
+	})
+
+	c.OnHTML(".chapter_list > li", func(e *colly.HTMLElement) {
+
+		var chapterName string
+
+		re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
+		arr := re.FindAllString(e.ChildText("a"), -1)
+		if len(arr) != 0 {
+			chapterName = arr[len(arr)-1]
+		} else {
+			chapterName = "0"
+		}
+
+		chapters = append(chapters, entity.Chapter{
+			Id:   strings.Split(e.ChildAttr("a", "href"), "/")[3],
+			Name: chapterName,
+		})
+	})
+
+	if err := c.Visit("https://www.mangatown.com/manga/" + mangaId); err != nil {
+		return returnData, err
+	}
+
+	returnData.Chapters = chapters
+	returnData.OriginalServer = "https://www.mangatown.com/manga/" + mangaId
+
+	return returnData, nil
+}
+func (m *mangaServiceImpl) MangatownChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
+
+	var data entity.ChapterData
+	var chapters []entity.Chapter
+
+	c := colly.NewCollector()
+
+	c.OnHTML(".chapter_list > li", func(e *colly.HTMLElement) {
+
+		var chapterName string
+
+		re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
+		arr := re.FindAllString(e.ChildText("a"), -1)
+		if len(arr) != 0 {
+			chapterName = arr[len(arr)-1]
+		} else {
+			chapterName = "0"
+		}
+
+		chapters = append(chapters, entity.Chapter{
+			Id:   strings.Split(e.ChildAttr("a", "href"), "/")[3],
+			Name: chapterName,
+		})
+	})
+
+	if err := c.Visit("https://www.mangatown.com/manga/" + mangaId); err != nil {
+		log.Info().Err(err)
+		return data, err
+	}
+
+	data.Chapters = chapters
+	data.OriginalServer = "https://www.mangatown.com/manga/" + mangaId
+	return data, nil
+}
+func (m *mangaServiceImpl) MangatownImage(ctx context.Context, mangaId string, chapterId string) (entity.ImageData, error) {
+
+	var returnData entity.ImageData
+	var dataImages []entity.Image
+	var link string
+
+	c := colly.NewCollector()
+
+	c.OnHTML(".read_img", func(e *colly.HTMLElement) {
+
+		mangaCoverCheck := strings.Replace(e.ChildAttr("img", "src"), "zjcdn.mangahere.org", "fmcdn.mangatown.com", -1)
+		link = "https:" + mangaCoverCheck
+	})
+
+	if err := c.Visit("https://www.mangatown.com/manga/" + mangaId + "/" + chapterId + "/"); err != nil {
+		return returnData, err
+	}
+
+	baseLink, imageLink := returnLastSliceAndJoinLink(link)
+	imageExtension, frontRawData, loopData := getRawImageData(imageLink)
+
+	for i := 0; i < 100; i++ {
+		tempNumber := loopData + i
+		if tempNumber < 10 {
+			a := fmt.Sprintf("%v00%v.%v", frontRawData, strconv.Itoa(tempNumber), imageExtension)
+			joinImageLink := fmt.Sprintf("%v/%v", baseLink, a)
+			dataImages = append(dataImages, entity.Image{
+				Image: joinImageLink,
+			})
+
+		} else if tempNumber < 100 && tempNumber > 9 {
+			a := fmt.Sprintf("%v0%v.%v", frontRawData, strconv.Itoa(tempNumber), imageExtension)
+			joinImageLink := fmt.Sprintf("%v/%v", baseLink, a)
+			dataImages = append(dataImages, entity.Image{
+				Image: joinImageLink,
+			})
+
+		} else if tempNumber < 1000 && tempNumber > 99 {
+			a := fmt.Sprintf("%v%v.%v", frontRawData, strconv.Itoa(tempNumber), imageExtension)
+			joinImageLink := fmt.Sprintf("%v/%v", baseLink, a)
+			dataImages = append(dataImages, entity.Image{
+				Image: joinImageLink,
+			})
+
+		} else if tempNumber < 10000 && tempNumber > 999 {
+			a := fmt.Sprintf("%v%v.%v", frontRawData, strconv.Itoa(tempNumber), imageExtension)
+			joinImageLink := fmt.Sprintf("%v/%v", baseLink, a)
+			dataImages = append(dataImages, entity.Image{
+				Image: joinImageLink,
+			})
+
+		}
+	}
+
+	re := regexp.MustCompile(`\d+`)
+	returnData.OriginalServer = "https://www.mangatown.com/manga/" + mangaId + "/" + chapterId + "/"
+	returnData.ChapterName = re.FindAllString(chapterId, -1)[0]
+	returnData.Images = dataImages
+	return returnData, nil
+}
+func returnLastSliceAndJoinLink(s string) (string, string) {
+	slice := strings.Split(s, "/")
+	return strings.Join(slice[:len(slice)-1], "/"), slice[len(slice)-1]
+}
+func getRawImageData(s string) (string, string, int) {
+
+	var imageExtension, frontRawData string
+	var loopData int
+
+	a := strings.Split(s, ".")
+	imageExtension = a[len(a)-1]
+
+	if strings.Contains(s, "_") {
+		b := strings.Split(a[0], "_")
+		loopData, _ = strconv.Atoi(b[len(b)-1])
+
+		if len(b) > 2 {
+			frontRawData = fmt.Sprintf("%v_%v_", b[0], b[1])
+		} else {
+			frontRawData = fmt.Sprintf("%v_", b[0])
+		}
+
+	} else {
+		frontRawData = a[0][0:1]
+		loopData, _ = strconv.Atoi(a[0][1:])
+	}
+
+	return imageExtension, frontRawData, loopData
+}
+
+func (m *mangaServiceImpl) MaidmySearch(ctx context.Context, search string) ([]entity.SearchData, error) {
+
+	var returnData []entity.SearchData
+
+	c := colly.NewCollector()
+
+	c.OnHTML("body > main > div > div > div.flexbox2 > div.flexbox2-item", func(e *colly.HTMLElement) {
+
+		var checkLastChapter string
+
+		tempLastChapter := strings.Split(e.ChildText("div.season"), " ")
+
+		if len(tempLastChapter) > 1 {
+			checkLastChapter = tempLastChapter[1]
+		}
+
+		returnData = append(returnData, entity.SearchData{
+			Title:       e.ChildAttr("a", "title"),
+			Id:          strings.Split(e.ChildAttr("a", "href"), "/")[4],
+			Cover:       e.ChildAttr("img", "src"),
+			LastChapter: checkLastChapter,
+		})
+	})
+
+	if err := c.Visit("https://www.maid.my.id/?s=" + search); err != nil {
+		return returnData, err
+	}
+
+	return returnData, nil
+}
 func (m *mangaServiceImpl) MaidmyIndex(ctx context.Context, pageNumber string) ([]entity.IndexData, error) {
 
 	var returnData []entity.IndexData
@@ -141,5 +614,106 @@ func (m *mangaServiceImpl) MaidmyIndex(ctx context.Context, pageNumber string) (
 		return nil, err
 	}
 
+	return returnData, nil
+}
+func (m *mangaServiceImpl) MaidmyDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
+
+	var returnData entity.DetailData
+	var chapters []entity.Chapter
+
+	c := colly.NewCollector()
+
+	c.OnHTML(".series-thumb", func(e *colly.HTMLElement) {
+		returnData.Cover = e.ChildAttr(`img`, "src")
+	})
+
+	c.OnHTML(".series-title", func(e *colly.HTMLElement) {
+		returnData.Title = e.ChildText(`h2`)
+	})
+
+	c.OnHTML(".series-synops", func(e *colly.HTMLElement) {
+		returnData.Summary = e.Text
+
+	})
+
+	c.OnHTML(".flexch-infoz", func(e *colly.HTMLElement) {
+
+		var chapterName string
+		tempChapterName := e.ChildAttr(`a`, "title")
+
+		if strings.Contains(tempChapterName, "Bahasa Indonesia") {
+			a := strings.Split(tempChapterName, "Bahasa Indonesia")
+			b := strings.Split(a[len(a)-2], " ")
+			chapterName = fmt.Sprintf("%v %v", b[len(b)-3], b[len(b)-2])
+
+		} else {
+			a := strings.Split(tempChapterName, " ")
+			chapterName = fmt.Sprintf("%v %v", a[len(a)-2], a[len(a)-1])
+		}
+
+		chapters = append(chapters, entity.Chapter{
+			Name: chapterName,
+			Id:   strings.Split(e.ChildAttr(`a`, "href"), "/")[3],
+		})
+
+	})
+
+	if err := c.Visit("https://www.maid.my.id/manga/" + mangaId + "/"); err != nil {
+		return returnData, err
+	}
+
+	returnData.Chapters = chapters
+	returnData.OriginalServer = "https://www.maid.my.id/manga/" + mangaId + "/"
+	return returnData, nil
+}
+func (m *mangaServiceImpl) MaidmyChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
+
+	var data entity.ChapterData
+	var chapters []entity.Chapter
+
+	c := colly.NewCollector()
+
+	c.OnHTML(".flexch-infoz", func(e *colly.HTMLElement) {
+
+		re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
+		tempName := strings.ReplaceAll(re.FindAllString(e.ChildAttr(`a`, "title"), -1)[0], "-", "")
+		chapters = append(chapters, entity.Chapter{
+			Name: tempName,
+			Id:   strings.Split(e.ChildAttr(`a`, "href"), "/")[3],
+		})
+
+	})
+
+	if err := c.Visit("https://www.maid.my.id/manga/" + mangaId + "/"); err != nil {
+		log.Info().Err(err)
+		return data, err
+	}
+
+	data.Chapters = chapters
+	data.OriginalServer = "https://www.maid.my.id/manga/" + mangaId
+	return data, nil
+}
+func (m *mangaServiceImpl) MaidmyImage(ctx context.Context, chapterId string) (entity.ImageData, error) {
+
+	var returnData entity.ImageData
+	var dataImages []entity.Image
+	c := colly.NewCollector()
+
+	c.OnHTML(".reader-area img", func(e *colly.HTMLElement) {
+		dataImages = append(dataImages, entity.Image{
+			Image: e.Attr("src"),
+		})
+
+	})
+
+	if err := c.Visit("https://www.maid.my.id/" + chapterId); err != nil {
+		return returnData, err
+	}
+
+	re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
+
+	returnData.Images = dataImages
+	returnData.ChapterName = re.FindAllString(chapterId, -1)[0]
+	returnData.OriginalServer = "https://www.maid.my.id/" + chapterId
 	return returnData, nil
 }

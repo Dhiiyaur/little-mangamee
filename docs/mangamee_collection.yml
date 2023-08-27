@@ -1,0 +1,1096 @@
+openapi: 3.0.0
+info:
+  title: Mangamee
+  version: 1.0.0
+paths:
+  //{baseurl}/api/manga/index:
+    get:
+      summary: index
+      parameters:
+        - name: source
+          in: query
+          schema:
+            type: string
+            description: from api source
+          example: mangabat
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Date:
+              schema:
+                type: string
+                example: Sun, 27 Aug 2023 01:04:04 GMT
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-zh403448
+                    cover: https://avt.mkklcdnv6temp.com/11/r/31-1691982252.jpg
+                    title: >-
+                      Ghoul ga Sekai wo Sukutta Koto wo Watashi dake ga
+                      shitteiru
+                    last_chapter: '4'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-xc401369
+                    cover: https://avt.mkklcdnv6temp.com/29/i/29-1680757597.jpg
+                    title: Doku Doku Mori Mori
+                    last_chapter: '7'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-jp360282
+                    cover: https://avt.mkklcdnv6temp.com/6/j/3-1583467886.jpg
+                    title: Oomuroke
+                    last_chapter: '86'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-wz401066
+                    cover: https://avt.mkklcdnv6temp.com/17/l/29-1679893581.jpg
+                    title: Sukinako ga Megane wo Wasureta - Twitter Side Stories
+                    last_chapter: '67'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-sc396995
+                    cover: https://avt.mkklcdnv6temp.com/1/o/25-1654741356.jpg
+                    title: Uryuudou Yumebanashi
+                    last_chapter: '62.2'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-yi402701
+                    cover: https://avt.mkklcdnv6temp.com/32/a/30-1687761180.jpg
+                    title: Catastrophic Necromancer
+                    last_chapter: '15'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-ta397519
+                    cover: https://avt.mkklcdnv6temp.com/24/q/26-1657773858.jpg
+                    title: The Bully In-Charge
+                    last_chapter: '59'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-jb387568
+                    cover: https://avt.mkklcdnv6temp.com/23/v/18-1583498023.jpg
+                    title: Blue Lock
+                    last_chapter: '230'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-sl370452
+                    cover: https://avt.mkklcdnv6temp.com/37/n/30-1688450156.jpg
+                    title: Star's Last Wish
+                    last_chapter: '28'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-tj397428
+                    cover: https://avt.mkklcdnv6temp.com/21/a/26-1657168109.jpg
+                    title: Reincarnation of the Veteran Soldier
+                    last_chapter: '87'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-to397807
+                    cover: https://avt.mkklcdnv6temp.com/36/p/26-1659670257.jpg
+                    title: See You Never
+                    last_chapter: '105'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-qk395103
+                    cover: https://avt.mkklcdnv6temp.com/21/e/24-1624538429.jpg
+                    title: A Red Knight Does Not Blindly Follow Money
+                    last_chapter: '97'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-rs395711
+                    cover: https://avt.mkklcdnv6temp.com/48/d/24-1634296781.jpg
+                    title: >-
+                      Kuroitsu-san in the Superhuman Research & Development
+                      Department
+                    last_chapter: '15.5'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-xd401996
+                    cover: https://avt.mkklcdnv6temp.com/3/x/30-1683527519.jpg
+                    title: Introduction to Survival
+                    last_chapter: '41'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-sw370463
+                    cover: https://avt.mkklcdnv6temp.com/33/n/9-1583481444.jpg
+                    title: Kaguya Hime
+                    last_chapter: '210'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-xz401444
+                    cover: https://avt.mkklcdnv6temp.com/32/l/29-1681196859.jpg
+                    title: Erotical Wizard With Twelve Brides
+                    last_chapter: '3'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-ip386256
+                    cover: https://avt.mkklcdnv6temp.com/26/a/17-1583496189.jpg
+                    title: Remake Our Life!
+                    last_chapter: '35.2'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-lo390055
+                    cover: https://avt.mkklcdnv6temp.com/15/y/20-1583501643.jpg
+                    title: Fundamentals of Light
+                    last_chapter: '28'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-zi377527
+                    cover: https://avt.mkklcdnv6temp.com/49/k/13-1583489663.jpg
+                    title: Cardcaptor Sakura - Clear Card Arc
+                    last_chapter: '76'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-pg393599
+                    cover: https://avt.mkklcdnv6temp.com/8/y/23-1611245658.jpg
+                    title: >-
+                      I'm a former slave, but I tried to buy an oni slave who I
+                      later found to have too much energy so I want to throw him
+                      away...
+                    last_chapter: '31'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-st396738
+                    cover: https://avt.mkklcdnv6temp.com/41/g/25-1652885541.jpg
+                    title: Blade Of Wind And Thunder
+                    last_chapter: '89'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-vu399661
+                    cover: https://avt.mkklcdnv6temp.com/11/f/28-1675052554.jpg
+                    title: Choose Your Heroes Carefully
+                    last_chapter: '17'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-oy392465
+                    cover: https://avt.mkklcdnv6temp.com/12/j/22-1600053780.jpg
+                    title: Ballpark de Tsukamaete!
+                    last_chapter: '23'
+                  - original_server: https://m.mangabat.com/manga-list-all/1/
+                    id: read-nc391395
+                    cover: https://avt.mkklcdnv6temp.com/29/r/28-1676450504.jpg
+                    title: Fushigi no Mayuri-san
+                    last_chapter: '66'
+                message: success
+                result_code: '00'
+  //{baseurl}/api/manga/search:
+    get:
+      summary: search
+      parameters:
+        - name: source
+          in: query
+          schema:
+            type: string
+          example: mangabat
+        - name: title
+          in: query
+          schema:
+            type: string
+          example: bleach
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Date:
+              schema:
+                type: string
+                example: Sun, 27 Aug 2023 03:26:46 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '364'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  - cover: https://avt.mkklcdnv6temp.com/4/i/1-1583463837.jpg
+                    title: Bleach
+                    id: read-vv357314
+                    original_server: ''
+                    last_chapter: '687.1'
+                  - cover: https://avt.mkklcdnv6temp.com/40/o/23-1615603959.jpg
+                    title: Bleach - Digital Colored Comics
+                    id: read-qc394369
+                    original_server: ''
+                    last_chapter: '282'
+                message: success
+                result_code: '00'
+  //{baseurl}/api/manga/chapter:
+    get:
+      summary: chapter
+      parameters:
+        - name: source
+          in: query
+          schema:
+            type: string
+            description: from api source
+          example: maidmy
+        - name: mangaid
+          in: query
+          schema:
+            type: string
+          example: boku-no-hero-academia
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Date:
+              schema:
+                type: string
+                example: Sun, 27 Aug 2023 02:59:14 GMT
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  chapters:
+                    - id: read-gh385100-chap-126
+                      name: '126'
+                    - id: read-gh385100-chap-125
+                      name: '125'
+                    - id: read-gh385100-chap-124
+                      name: '124'
+                    - id: read-gh385100-chap-123
+                      name: '123'
+                    - id: read-gh385100-chap-122
+                      name: '122'
+                    - id: read-gh385100-chap-121
+                      name: '121'
+                    - id: read-gh385100-chap-120
+                      name: '120'
+                    - id: read-gh385100-chap-119
+                      name: '119'
+                    - id: read-gh385100-chap-118
+                      name: '118'
+                    - id: read-gh385100-chap-117
+                      name: '117'
+                    - id: read-gh385100-chap-116
+                      name: '116'
+                    - id: read-gh385100-chap-115
+                      name: '115'
+                    - id: read-gh385100-chap-114
+                      name: '114'
+                    - id: read-gh385100-chap-113
+                      name: '113'
+                    - id: read-gh385100-chap-112
+                      name: '112'
+                    - id: read-gh385100-chap-111
+                      name: '111'
+                    - id: read-gh385100-chap-110
+                      name: '110'
+                    - id: read-gh385100-chap-109
+                      name: '109'
+                    - id: read-gh385100-chap-108
+                      name: '108'
+                    - id: read-gh385100-chap-107
+                      name: '107'
+                    - id: read-gh385100-chap-106
+                      name: '106'
+                    - id: read-gh385100-chap-105
+                      name: '105'
+                    - id: read-gh385100-chap-104
+                      name: '104'
+                    - id: read-gh385100-chap-103
+                      name: '103'
+                    - id: read-gh385100-chap-102
+                      name: '102'
+                    - id: read-gh385100-chap-101
+                      name: '101'
+                    - id: read-gh385100-chap-100
+                      name: '100'
+                    - id: read-gh385100-chap-99
+                      name: '99'
+                    - id: read-gh385100-chap-98
+                      name: '98'
+                    - id: read-gh385100-chap-97
+                      name: '97'
+                    - id: read-gh385100-chap-96
+                      name: '96'
+                    - id: read-gh385100-chap-95
+                      name: '95'
+                    - id: read-gh385100-chap-94
+                      name: '94'
+                    - id: read-gh385100-chap-93
+                      name: '93'
+                    - id: read-gh385100-chap-92
+                      name: '92'
+                    - id: read-gh385100-chap-91
+                      name: '91'
+                    - id: read-gh385100-chap-90
+                      name: '90'
+                    - id: read-gh385100-chap-89
+                      name: '89'
+                    - id: read-gh385100-chap-88
+                      name: '88'
+                    - id: read-gh385100-chap-87
+                      name: '87'
+                    - id: read-gh385100-chap-86
+                      name: '86'
+                    - id: read-gh385100-chap-85
+                      name: '85'
+                    - id: read-gh385100-chap-84
+                      name: '84'
+                    - id: read-gh385100-chap-83
+                      name: '83'
+                    - id: read-gh385100-chap-82
+                      name: '82'
+                    - id: read-gh385100-chap-81
+                      name: '81'
+                    - id: read-gh385100-chap-80
+                      name: '80'
+                    - id: read-gh385100-chap-79
+                      name: '79'
+                    - id: read-gh385100-chap-78
+                      name: '78'
+                    - id: read-gh385100-chap-77
+                      name: '77'
+                    - id: read-gh385100-chap-76
+                      name: '76'
+                    - id: read-gh385100-chap-75
+                      name: '75'
+                    - id: read-gh385100-chap-74
+                      name: '74'
+                    - id: read-gh385100-chap-73
+                      name: '73'
+                    - id: read-gh385100-chap-72
+                      name: '72'
+                    - id: read-gh385100-chap-71
+                      name: '71'
+                    - id: read-gh385100-chap-70
+                      name: '70'
+                    - id: read-gh385100-chap-69
+                      name: '69'
+                    - id: read-gh385100-chap-68
+                      name: '68'
+                    - id: read-gh385100-chap-67
+                      name: '67'
+                    - id: read-gh385100-chap-66
+                      name: '66'
+                    - id: read-gh385100-chap-65
+                      name: '65'
+                    - id: read-gh385100-chap-64
+                      name: '64'
+                    - id: read-gh385100-chap-63
+                      name: '63'
+                    - id: read-gh385100-chap-62
+                      name: '62'
+                    - id: read-gh385100-chap-61
+                      name: '61'
+                    - id: read-gh385100-chap-60
+                      name: '60'
+                    - id: read-gh385100-chap-59
+                      name: '59'
+                    - id: read-gh385100-chap-58
+                      name: '58'
+                    - id: read-gh385100-chap-57
+                      name: '57'
+                    - id: read-gh385100-chap-56
+                      name: '56'
+                    - id: read-gh385100-chap-55
+                      name: '55'
+                    - id: read-gh385100-chap-54
+                      name: '54'
+                    - id: read-gh385100-chap-53
+                      name: '53'
+                    - id: read-gh385100-chap-52
+                      name: '52'
+                    - id: read-gh385100-chap-51
+                      name: '51'
+                    - id: read-gh385100-chap-50
+                      name: '50'
+                    - id: read-gh385100-chap-49
+                      name: '49'
+                    - id: read-gh385100-chap-48
+                      name: '48'
+                    - id: read-gh385100-chap-47
+                      name: '47'
+                    - id: read-gh385100-chap-46
+                      name: '46'
+                    - id: read-gh385100-chap-45
+                      name: '45'
+                    - id: read-gh385100-chap-44
+                      name: '44'
+                    - id: read-gh385100-chap-43
+                      name: '43'
+                    - id: read-gh385100-chap-42
+                      name: '42'
+                    - id: read-gh385100-chap-41
+                      name: '41'
+                    - id: read-gh385100-chap-40
+                      name: '40'
+                    - id: read-gh385100-chap-39
+                      name: '39'
+                    - id: read-gh385100-chap-38
+                      name: '38'
+                    - id: read-gh385100-chap-37
+                      name: '37'
+                    - id: read-gh385100-chap-36
+                      name: '36'
+                    - id: read-gh385100-chap-35
+                      name: '35'
+                    - id: read-gh385100-chap-34
+                      name: '34'
+                    - id: read-gh385100-chap-33
+                      name: '33'
+                    - id: read-gh385100-chap-32
+                      name: '32'
+                    - id: read-gh385100-chap-31
+                      name: '31'
+                    - id: read-gh385100-chap-30
+                      name: '30'
+                    - id: read-gh385100-chap-29
+                      name: '29'
+                    - id: read-gh385100-chap-28
+                      name: '28'
+                    - id: read-gh385100-chap-27
+                      name: '27'
+                    - id: read-gh385100-chap-26
+                      name: '26'
+                    - id: read-gh385100-chap-25
+                      name: '25'
+                    - id: read-gh385100-chap-24
+                      name: '24'
+                    - id: read-gh385100-chap-23
+                      name: '23'
+                    - id: read-gh385100-chap-22
+                      name: '22'
+                    - id: read-gh385100-chap-21
+                      name: '21'
+                    - id: read-gh385100-chap-20
+                      name: '20'
+                    - id: read-gh385100-chap-19
+                      name: '19'
+                    - id: read-gh385100-chap-18
+                      name: '18'
+                    - id: read-gh385100-chap-17
+                      name: '17'
+                    - id: read-gh385100-chap-16
+                      name: '16'
+                    - id: read-gh385100-chap-15
+                      name: '15'
+                    - id: read-gh385100-chap-14
+                      name: '14'
+                    - id: read-gh385100-chap-13
+                      name: '13'
+                    - id: read-gh385100-chap-12
+                      name: '12'
+                    - id: read-gh385100-chap-11
+                      name: '11'
+                    - id: read-gh385100-chap-10
+                      name: '10'
+                    - id: read-gh385100-chap-9
+                      name: '9'
+                    - id: read-gh385100-chap-8
+                      name: '8'
+                    - id: read-gh385100-chap-7
+                      name: '7'
+                    - id: read-gh385100-chap-6
+                      name: '6'
+                    - id: read-gh385100-chap-5
+                      name: '5'
+                    - id: read-gh385100-chap-4
+                      name: '4'
+                    - id: read-gh385100-chap-3
+                      name: '3'
+                    - id: read-gh385100-chap-2
+                      name: '2'
+                    - id: read-gh385100-chap-1
+                      name: '1'
+                  original_server: https://readmangabat.com/read-gh385100
+                message: success
+                result_code: '00'
+  //{baseurl}/api/manga/source:
+    get:
+
+      summary: source
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Date:
+              schema:
+                type: string
+                example: Sun, 27 Aug 2023 01:08:08 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '93'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  - mangabat
+                  - mangaread
+                  - mangatown
+                  - maidmy
+                message: success
+                result_code: '00'
+  //{baseurl}/api/manga/detail:
+    get:
+
+      summary: detail
+      parameters:
+        - name: source
+          in: query
+          schema:
+            type: string
+            description: from api source
+          example: mangabat
+        - name: mangaid
+          in: query
+          schema:
+            type: string
+          example: read-gh385100
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Date:
+              schema:
+                type: string
+                example: Sun, 27 Aug 2023 03:13:29 GMT
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  original_server: https://readmangabat.com/read-gh385100/
+                  cover: https://avt.mkklcdnv6temp.com/32/x/16-1583494652.jpg
+                  title: The World Is Money And Power
+                  summary: >-
+                    The World Is Money And Power Manga :
+
+                    With the arrival of three chaebol members into general high
+                    schools, teachers and students will be transformed into "
+                    brain fighting " schools that seek power by surrendering to
+                    massive capital. Dan-geon, a genius, came to inherit the
+                    school's rules.
+                  chapters:
+                    - id: read-gh385100-chap-126
+                      name: '126'
+                    - id: read-gh385100-chap-125
+                      name: '125'
+                    - id: read-gh385100-chap-124
+                      name: '124'
+                    - id: read-gh385100-chap-123
+                      name: '123'
+                    - id: read-gh385100-chap-122
+                      name: '122'
+                    - id: read-gh385100-chap-121
+                      name: '121'
+                    - id: read-gh385100-chap-120
+                      name: '120'
+                    - id: read-gh385100-chap-119
+                      name: '119'
+                    - id: read-gh385100-chap-118
+                      name: '118'
+                    - id: read-gh385100-chap-117
+                      name: '117'
+                    - id: read-gh385100-chap-116
+                      name: '116'
+                    - id: read-gh385100-chap-115
+                      name: '115'
+                    - id: read-gh385100-chap-114
+                      name: '114'
+                    - id: read-gh385100-chap-113
+                      name: '113'
+                    - id: read-gh385100-chap-112
+                      name: '112'
+                    - id: read-gh385100-chap-111
+                      name: '111'
+                    - id: read-gh385100-chap-110
+                      name: '110'
+                    - id: read-gh385100-chap-109
+                      name: '109'
+                    - id: read-gh385100-chap-108
+                      name: '108'
+                    - id: read-gh385100-chap-107
+                      name: '107'
+                    - id: read-gh385100-chap-106
+                      name: '106'
+                    - id: read-gh385100-chap-105
+                      name: '105'
+                    - id: read-gh385100-chap-104
+                      name: '104'
+                    - id: read-gh385100-chap-103
+                      name: '103'
+                    - id: read-gh385100-chap-102
+                      name: '102'
+                    - id: read-gh385100-chap-101
+                      name: '101'
+                    - id: read-gh385100-chap-100
+                      name: '100'
+                    - id: read-gh385100-chap-99
+                      name: '99'
+                    - id: read-gh385100-chap-98
+                      name: '98'
+                    - id: read-gh385100-chap-97
+                      name: '97'
+                    - id: read-gh385100-chap-96
+                      name: '96'
+                    - id: read-gh385100-chap-95
+                      name: '95'
+                    - id: read-gh385100-chap-94
+                      name: '94'
+                    - id: read-gh385100-chap-93
+                      name: '93'
+                    - id: read-gh385100-chap-92
+                      name: '92'
+                    - id: read-gh385100-chap-91
+                      name: '91'
+                    - id: read-gh385100-chap-90
+                      name: '90'
+                    - id: read-gh385100-chap-89
+                      name: '89'
+                    - id: read-gh385100-chap-88
+                      name: '88'
+                    - id: read-gh385100-chap-87
+                      name: '87'
+                    - id: read-gh385100-chap-86
+                      name: '86'
+                    - id: read-gh385100-chap-85
+                      name: '85'
+                    - id: read-gh385100-chap-84
+                      name: '84'
+                    - id: read-gh385100-chap-83
+                      name: '83'
+                    - id: read-gh385100-chap-82
+                      name: '82'
+                    - id: read-gh385100-chap-81
+                      name: '81'
+                    - id: read-gh385100-chap-80
+                      name: '80'
+                    - id: read-gh385100-chap-79
+                      name: '79'
+                    - id: read-gh385100-chap-78
+                      name: '78'
+                    - id: read-gh385100-chap-77
+                      name: '77'
+                    - id: read-gh385100-chap-76
+                      name: '76'
+                    - id: read-gh385100-chap-75
+                      name: '75'
+                    - id: read-gh385100-chap-74
+                      name: '74'
+                    - id: read-gh385100-chap-73
+                      name: '73'
+                    - id: read-gh385100-chap-72
+                      name: '72'
+                    - id: read-gh385100-chap-71
+                      name: '71'
+                    - id: read-gh385100-chap-70
+                      name: '70'
+                    - id: read-gh385100-chap-69
+                      name: '69'
+                    - id: read-gh385100-chap-68
+                      name: '68'
+                    - id: read-gh385100-chap-67
+                      name: '67'
+                    - id: read-gh385100-chap-66
+                      name: '66'
+                    - id: read-gh385100-chap-65
+                      name: '65'
+                    - id: read-gh385100-chap-64
+                      name: '64'
+                    - id: read-gh385100-chap-63
+                      name: '63'
+                    - id: read-gh385100-chap-62
+                      name: '62'
+                    - id: read-gh385100-chap-61
+                      name: '61'
+                    - id: read-gh385100-chap-60
+                      name: '60'
+                    - id: read-gh385100-chap-59
+                      name: '59'
+                    - id: read-gh385100-chap-58
+                      name: '58'
+                    - id: read-gh385100-chap-57
+                      name: '57'
+                    - id: read-gh385100-chap-56
+                      name: '56'
+                    - id: read-gh385100-chap-55
+                      name: '55'
+                    - id: read-gh385100-chap-54
+                      name: '54'
+                    - id: read-gh385100-chap-53
+                      name: '53'
+                    - id: read-gh385100-chap-52
+                      name: '52'
+                    - id: read-gh385100-chap-51
+                      name: '51'
+                    - id: read-gh385100-chap-50
+                      name: '50'
+                    - id: read-gh385100-chap-49
+                      name: '49'
+                    - id: read-gh385100-chap-48
+                      name: '48'
+                    - id: read-gh385100-chap-47
+                      name: '47'
+                    - id: read-gh385100-chap-46
+                      name: '46'
+                    - id: read-gh385100-chap-45
+                      name: '45'
+                    - id: read-gh385100-chap-44
+                      name: '44'
+                    - id: read-gh385100-chap-43
+                      name: '43'
+                    - id: read-gh385100-chap-42
+                      name: '42'
+                    - id: read-gh385100-chap-41
+                      name: '41'
+                    - id: read-gh385100-chap-40
+                      name: '40'
+                    - id: read-gh385100-chap-39
+                      name: '39'
+                    - id: read-gh385100-chap-38
+                      name: '38'
+                    - id: read-gh385100-chap-37
+                      name: '37'
+                    - id: read-gh385100-chap-36
+                      name: '36'
+                    - id: read-gh385100-chap-35
+                      name: '35'
+                    - id: read-gh385100-chap-34
+                      name: '34'
+                    - id: read-gh385100-chap-33
+                      name: '33'
+                    - id: read-gh385100-chap-32
+                      name: '32'
+                    - id: read-gh385100-chap-31
+                      name: '31'
+                    - id: read-gh385100-chap-30
+                      name: '30'
+                    - id: read-gh385100-chap-29
+                      name: '29'
+                    - id: read-gh385100-chap-28
+                      name: '28'
+                    - id: read-gh385100-chap-27
+                      name: '27'
+                    - id: read-gh385100-chap-26
+                      name: '26'
+                    - id: read-gh385100-chap-25
+                      name: '25'
+                    - id: read-gh385100-chap-24
+                      name: '24'
+                    - id: read-gh385100-chap-23
+                      name: '23'
+                    - id: read-gh385100-chap-22
+                      name: '22'
+                    - id: read-gh385100-chap-21
+                      name: '21'
+                    - id: read-gh385100-chap-20
+                      name: '20'
+                    - id: read-gh385100-chap-19
+                      name: '19'
+                    - id: read-gh385100-chap-18
+                      name: '18'
+                    - id: read-gh385100-chap-17
+                      name: '17'
+                    - id: read-gh385100-chap-16
+                      name: '16'
+                    - id: read-gh385100-chap-15
+                      name: '15'
+                    - id: read-gh385100-chap-14
+                      name: '14'
+                    - id: read-gh385100-chap-13
+                      name: '13'
+                    - id: read-gh385100-chap-12
+                      name: '12'
+                    - id: read-gh385100-chap-11
+                      name: '11'
+                    - id: read-gh385100-chap-10
+                      name: '10'
+                    - id: read-gh385100-chap-9
+                      name: '9'
+                    - id: read-gh385100-chap-8
+                      name: '8'
+                    - id: read-gh385100-chap-7
+                      name: '7'
+                    - id: read-gh385100-chap-6
+                      name: '6'
+                    - id: read-gh385100-chap-5
+                      name: '5'
+                    - id: read-gh385100-chap-4
+                      name: '4'
+                    - id: read-gh385100-chap-3
+                      name: '3'
+                    - id: read-gh385100-chap-2
+                      name: '2'
+                    - id: read-gh385100-chap-1
+                      name: '1'
+                message: success
+                result_code: '00'
+  //{baseurl}/api/manga/image:
+    get:
+
+      summary: image
+      parameters:
+        - name: source
+          in: query
+          schema:
+            type: string
+            description: from api source
+          example: mangabat
+        - name: mangaid
+          in: query
+          schema:
+            type: string
+          example: read-gh385100
+        - name: chapterid
+          in: query
+          schema:
+            type: string
+          example: read-gh385100-chap-126
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Date:
+              schema:
+                type: string
+                example: Sun, 27 Aug 2023 03:14:38 GMT
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  original_server: https://www.mangatown.com/manga/tower_of_god/c585/
+                  chapter_name: '585'
+                  images:
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_001.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_002.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_003.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_004.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_005.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_006.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_007.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_008.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_009.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_010.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_011.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_012.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_013.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_014.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_015.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_016.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_017.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_018.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_019.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_020.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_021.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_022.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_023.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_024.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_025.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_026.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_027.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_028.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_029.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_030.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_031.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_032.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_033.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_034.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_035.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_036.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_037.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_038.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_039.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_040.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_041.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_042.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_043.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_044.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_045.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_046.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_047.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_048.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_049.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_050.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_051.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_052.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_053.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_054.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_055.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_056.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_057.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_058.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_059.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_060.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_061.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_062.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_063.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_064.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_065.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_066.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_067.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_068.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_069.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_070.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_071.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_072.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_073.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_074.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_075.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_076.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_077.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_078.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_079.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_080.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_081.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_082.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_083.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_084.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_085.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_086.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_087.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_088.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_089.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_090.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_091.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_092.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_093.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_094.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_095.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_096.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_097.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_098.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_099.jpg
+                    - image: >-
+                        https://fmcdn.mangatown.com/store/manga/8207/585.0/compressed/utower_of_100.jpg
+                message: success
+                result_code: '00'

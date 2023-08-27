@@ -31,6 +31,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		})
 	})
 
+	router.Static("/static", "docs")
+	router.GET("/docs/*any", func(c *gin.Context) {
+		c.File("docs/index.html")
+	})
+
+	router.GET("api/manga/proxy", mangaController.MangabatProxy)
+	router.GET("api/manga/source", mangaController.Source)
+	router.GET("api/manga/search", mangaController.Search)
 	router.GET("api/manga/index", mangaController.Index)
+	router.GET("api/manga/chapter", mangaController.Chapter)
+	router.GET("api/manga/detail", mangaController.Detail)
+	router.GET("api/manga/image", mangaController.Image)
 	router.ServeHTTP(w, r)
 }
