@@ -32,11 +32,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	})
 
 	router.Static("/static", "docs")
+	// router.GET("/static/*filepath", func(c *gin.Context) {
+	// 	staticHandler := http.FileServer(http.Dir("docs"))
+	// 	http.StripPrefix("/static/", staticHandler).ServeHTTP(c.Writer, c.Request)
+	// })
 
-	// staticHandler := http.FileServer(http.Dir("docs"))
-	// http.StripPrefix("/static/", staticHandler).ServeHTTP(c.Writer, c.Request)
-
-	router.GET("/docs/*any", func(c *gin.Context) {
+	router.GET("/docs", func(c *gin.Context) {
 		c.File("docs/index.html")
 	})
 
