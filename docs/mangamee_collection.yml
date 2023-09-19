@@ -540,6 +540,9 @@ paths:
                   - mangaread
                   - mangatown
                   - maidmy
+                  - asuracomic
+                  - manganato
+                  - manganelo
                 message: success
                 result_code: '00'
   //{baseurl}/api/manga/detail:

@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gocolly/colly"
 )
@@ -43,7 +44,6 @@ func (m *mangaServiceImpl) MangabatSearch(ctx context.Context, search string) ([
 
 	return returnData, nil
 }
-
 func (m *mangaServiceImpl) MangabatIndex(ctx context.Context, pageNumber string) ([]entity.IndexData, error) {
 
 	var returnData []entity.IndexData
@@ -707,6 +707,7 @@ func (m *mangaServiceImpl) MaidmyImage(ctx context.Context, chapterId string) (e
 	})
 
 	if err := c.Visit("https://www.maid.my.id/" + chapterId); err != nil {
+		log.Info().Err(err)
 		return returnData, err
 	}
 
@@ -716,4 +717,521 @@ func (m *mangaServiceImpl) MaidmyImage(ctx context.Context, chapterId string) (e
 	returnData.ChapterName = re.FindAllString(chapterId, -1)[0]
 	returnData.OriginalServer = "https://www.maid.my.id/" + chapterId
 	return returnData, nil
+}
+
+func (m *mangaServiceImpl) AsuraComicIndex(ctx context.Context, pageNumber string) ([]entity.IndexData, error) {
+
+	var returnData []entity.IndexData
+
+	c := colly.NewCollector()
+	c.SetRequestTimeout(60 * time.Second)
+
+	c.OnHTML("#content > div.wrapper > div.postbody > div.bixbox > div.mrgn > div.listupd > div.bs > div.bsx", func(e *colly.HTMLElement) {
+		returnData = append(returnData, entity.IndexData{
+			Title:          e.ChildText("a > div.bigor > div.tt"),
+			Id:             strings.Split(e.ChildAttr("a", "href"), "/")[4],
+			Cover:          e.ChildAttr("a > div.limit > img", "src"),
+			LastChapter:    e.ChildText("a > div.bigor > div.adds > div.epxs"),
+			OriginalServer: fmt.Sprintf("https://asuracomics.com/manga/?page=%v&order=update", pageNumber),
+		})
+	})
+
+	if err := c.Visit(fmt.Sprintf("https://asuracomics.com/manga/?page=%v&order=update", pageNumber)); err != nil {
+		log.Info().Err(err)
+		return nil, err
+	}
+
+	return returnData, nil
+}
+
+func (m *mangaServiceImpl) AsuraComicSearch(ctx context.Context, search string) ([]entity.SearchData, error) {
+
+	var returnData []entity.SearchData
+
+	pageCount := 3
+	currentPage := 1
+
+	c := colly.NewCollector()
+	c.SetRequestTimeout(60 * time.Second)
+	c.OnHTML("#content > div.wrapper > div.postbody > div.bixbox > div.listupd > div.bs > div.bsx", func(e *colly.HTMLElement) {
+		returnData = append(returnData, entity.SearchData{
+			Title:          e.ChildText("a > div.bigor > div.tt"),
+			Id:             strings.Split(e.ChildAttr("a", "href"), "/")[4],
+			Cover:          e.ChildAttr("a > div.limit > img", "src"),
+			LastChapter:    e.ChildText("a > div.bigor > div.adds > div.epxs"),
+			OriginalServer: fmt.Sprintf("https://asuracomics.com/page/%v/?s=solo", currentPage),
+		})
+	})
+
+	for currentPage <= pageCount {
+		if err := c.Visit(fmt.Sprintf("https://asuracomics.com/page/%v/?s=%v", currentPage, search)); err != nil {
+			log.Info().Err(err)
+			return returnData, nil
+		}
+		currentPage++
+	}
+
+	return returnData, nil
+
+}
+
+func (m *mangaServiceImpl) AsuraComicDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
+
+	var returnData entity.DetailData
+	var chapters []entity.Chapter
+
+	c := colly.NewCollector()
+	c.SetRequestTimeout(60 * time.Second)
+	re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
+
+	c.OnHTML("div.bixbox.animefull", func(e *colly.HTMLElement) {
+
+		returnData.Title = e.ChildText("div.bigcontent > div.infox > h1.entry-title")
+		returnData.Cover = e.ChildAttr("div.bigcontent > div.thumbook > div.thumb > img", "src")
+		returnData.OriginalServer = fmt.Sprintf("https://asuracomics.com/manga/%v", mangaId)
+		returnData.Summary = e.ChildText("div.bigcontent > div.infox > div.wd-full > div.entry-content.entry-content-single")
+
+	})
+
+	c.OnHTML("#chapterlist > ul > li > div.chbox", func(e *colly.HTMLElement) {
+
+		fmt.Println("link", strings.Split(e.ChildAttr("div.eph-num > a", "href"), "/")[3])
+		fmt.Println("chapname", re.FindAllString(e.ChildText("div.eph-num > a > span.chapternum"), -1)[0])
+
+		chapters = append(chapters, entity.Chapter{
+			Id:   strings.Split(e.ChildAttr("div.eph-num > a", "href"), "/")[3],
+			Name: re.FindAllString(e.ChildText("div.eph-num > a > span.chapternum"), -1)[0],
+		})
+	})
+
+	if err := c.Visit(fmt.Sprintf("https://asuracomics.com/manga/%v", mangaId)); err != nil {
+		log.Info().Err(err)
+		return returnData, nil
+	}
+
+	returnData.Chapters = chapters
+	return returnData, nil
+}
+
+func (m *mangaServiceImpl) AsuraComicChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
+
+	var data entity.ChapterData
+	var chapters []entity.Chapter
+
+	c := colly.NewCollector()
+	c.SetRequestTimeout(60 * time.Second)
+	re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
+
+	c.OnHTML("#chapterlist > ul > li > div.chbox", func(e *colly.HTMLElement) {
+
+		fmt.Println("link", strings.Split(e.ChildAttr("div.eph-num > a", "href"), "/")[3])
+		fmt.Println("chapname", re.FindAllString(e.ChildText("div.eph-num > a > span.chapternum"), -1)[0])
+
+		chapters = append(chapters, entity.Chapter{
+			Id:   strings.Split(e.ChildAttr("div.eph-num > a", "href"), "/")[3],
+			Name: re.FindAllString(e.ChildText("div.eph-num > a > span.chapternum"), -1)[0],
+		})
+	})
+
+	if err := c.Visit(fmt.Sprintf("https://asuracomics.com/manga/%v", mangaId)); err != nil {
+		log.Info().Err(err)
+		return data, nil
+	}
+
+	data.OriginalServer = fmt.Sprintf("https://asuracomics.com/manga/%v", mangaId)
+	data.Chapters = chapters
+	return data, nil
+}
+
+func (m *mangaServiceImpl) AsuraComicImage(ctx context.Context, chapterId string) (entity.ImageData, error) {
+
+	var returnData entity.ImageData
+	var dataImages []entity.Image
+
+	c := colly.NewCollector()
+	c.SetRequestTimeout(60 * time.Second)
+	c.OnHTML("#readerarea > p", func(e *colly.HTMLElement) {
+
+		dataImages = append(dataImages, entity.Image{
+			Image: e.ChildAttr("img", "src"),
+		})
+	})
+
+	if err := c.Visit(fmt.Sprintf("https://asuracomics.com/%v", chapterId)); err != nil {
+		log.Info().Err(err)
+		return returnData, nil
+	}
+
+	returnData.Images = dataImages
+	returnData.OriginalServer = fmt.Sprintf("https://asuracomics.com/%v", chapterId)
+	returnData.ChapterName = chapterId
+
+	return returnData, nil
+}
+
+func (m *mangaServiceImpl) ManganatoSearch(ctx context.Context, search string) ([]entity.SearchData, error) {
+
+	var returnData []entity.SearchData
+
+	pageCount := 3
+	currentPage := 1
+
+	c := colly.NewCollector()
+	c.SetRequestTimeout(60 * time.Second)
+
+	c.OnHTML("body > div.body-site > div.container.container-main > div.container-main-left > div.panel-search-story > div.search-story-item", func(e *colly.HTMLElement) {
+
+		returnData = append(returnData, entity.SearchData{
+			Title:          e.ChildText("div.item-right > h3 > a"),
+			Id:             strings.Split(e.ChildAttr("a", "href"), "/")[3],
+			Cover:          e.ChildAttr("a > img", "src"),
+			LastChapter:    e.ChildText("div.item-right > a:nth-child(2)"),
+			OriginalServer: fmt.Sprintf("https://manganato.com/search/story/%v?page=%v", search, currentPage),
+		})
+	})
+
+	for currentPage <= pageCount {
+		if err := c.Visit(fmt.Sprintf("https://manganato.com/search/story/%v?page=%v", search, currentPage)); err != nil {
+			log.Info().Err(err)
+			return returnData, nil
+		}
+		currentPage++
+	}
+
+	return returnData, nil
+
+}
+
+func (m *mangaServiceImpl) ManganatoIndex(ctx context.Context, pageNumber string) ([]entity.IndexData, error) {
+
+	var returnData []entity.IndexData
+
+	c := colly.NewCollector()
+	c.SetRequestTimeout(60 * time.Second)
+
+	c.OnHTML("body > div.body-site > div.container.container-main > div.panel-content-genres > div.content-genres-item", func(e *colly.HTMLElement) {
+		returnData = append(returnData, entity.IndexData{
+			Title:          e.ChildText("div.genres-item-info > h3 > a"),
+			Id:             strings.Split(e.ChildAttr("a", "href"), "/")[3],
+			Cover:          e.ChildAttr("a > img", "src"),
+			LastChapter:    e.ChildText("div.genres-item-info > a.genres-item-chap.text-nowrap.a-h"),
+			OriginalServer: fmt.Sprintf("https://manganato.com/advanced_search?s=all&g_e=_41_&page=%v", pageNumber),
+		})
+	})
+
+	if err := c.Visit(fmt.Sprintf("https://manganato.com/advanced_search?s=all&g_e=_41_&page=%v", pageNumber)); err != nil {
+		log.Info().Err(err)
+		return nil, err
+	}
+
+	return returnData, nil
+}
+
+func (m *mangaServiceImpl) ManganatoDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
+
+	var returnData entity.DetailData
+	var chapters []entity.Chapter
+
+	// re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
+
+	c := colly.NewCollector()
+	c.SetRequestTimeout(60 * time.Second)
+
+	c.OnHTML("body > div.body-site > div.container.container-main > div.container-main-left > div.panel-story-info", func(e *colly.HTMLElement) {
+
+		tmpSummary := strings.Split(e.ChildText("div.panel-story-info-description"), ".-")
+		removeText := strings.Split(tmpSummary[0], "Description :")
+		if len(removeText) > 1 {
+			returnData.Summary = removeText[1]
+		} else {
+			returnData.Summary = removeText[0]
+		}
+
+		returnData.Cover = e.ChildAttr("span.info-image > img", "src")
+		returnData.Title = e.ChildText("div.story-info-right > h1")
+	})
+
+	c.OnHTML("body > div.body-site > div.container.container-main > div.container-main-left > div.panel-story-chapter-list > ul > li.a-h", func(e *colly.HTMLElement) {
+		chapters = append(chapters, entity.Chapter{
+			Name: e.ChildText("a"),
+			Id:   strings.Split(e.ChildAttr("a", "href"), "/")[4],
+		})
+
+	})
+
+	if err := c.Visit(fmt.Sprintf("https://chapmanganato.com/%v", mangaId)); err != nil {
+		log.Info().Err(err)
+		return returnData, err
+	}
+
+	returnData.Chapters = chapters
+	returnData.OriginalServer = fmt.Sprintf("https://chapmanganato.com/%v", mangaId)
+	return returnData, nil
+
+}
+
+func (m *mangaServiceImpl) ManganatoChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
+
+	var data entity.ChapterData
+	var chapters []entity.Chapter
+	// re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
+
+	c := colly.NewCollector()
+	c.SetRequestTimeout(60 * time.Second)
+
+	c.OnHTML("body > div.body-site > div.container.container-main > div.container-main-left > div.panel-story-chapter-list > ul > li.a-h", func(e *colly.HTMLElement) {
+		chapters = append(chapters, entity.Chapter{
+			// Name: re.FindAllString(e.ChildText("a"), -1)[0],
+			Name: e.ChildText("a"),
+			Id:   strings.Split(e.ChildAttr("a", "href"), "/")[4],
+		})
+
+	})
+
+	if err := c.Visit(fmt.Sprintf("https://chapmanganato.com/%v", mangaId)); err != nil {
+		log.Info().Err(err)
+		return data, err
+	}
+
+	data.Chapters = chapters
+	data.OriginalServer = fmt.Sprintf("https://chapmanganato.com/%v", mangaId)
+	return data, nil
+}
+
+func (m *mangaServiceImpl) ManganatoImage(ctx context.Context, mangaId string, chapterId string) (entity.ImageData, error) {
+
+	var returnData entity.ImageData
+	var dataImages []entity.Image
+
+	c := colly.NewCollector()
+	c.SetRequestTimeout(60 * time.Second)
+
+	c.OnHTML("body > div.body-site > div.container-chapter-reader > img", func(e *colly.HTMLElement) {
+		dataImages = append(dataImages, entity.Image{
+			Image: e.Attr("src"),
+		})
+
+	})
+
+	if err := c.Visit(fmt.Sprintf("https://chapmanganato.com/%v/%v", mangaId, chapterId)); err != nil {
+		log.Info().Err(err)
+		return returnData, err
+	}
+
+	returnData.Images = dataImages
+	returnData.OriginalServer = fmt.Sprintf("https://chapmanganato.com/%v/%v", mangaId, chapterId)
+	returnData.ChapterName = chapterId
+
+	return returnData, nil
+
+}
+
+func (m *mangaServiceImpl) ManganeloIndex(ctx context.Context, pageNumber string) ([]entity.IndexData, error) {
+
+	var returnData []entity.IndexData
+	// re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
+
+	c := colly.NewCollector()
+	c.SetRequestTimeout(60 * time.Second)
+
+	c.OnHTML("body > div.body-site > div.container.container-main > div.panel-content-genres > div.content-genres-item", func(e *colly.HTMLElement) {
+
+		// tmpLastChapter := re.FindAllString(e.ChildText("div.genres-item-info > a.genres-item-chap.text-nowrap.a-h"), -1)
+		// var lastChapter string
+		// if len(tmpLastChapter) > 0 {
+		// 	lastChapter = tmpLastChapter[1]
+		// } else {
+		// 	lastChapter = tmpLastChapter[0]
+		// }
+
+		lastChapter := e.ChildText("div.genres-item-info > a.genres-item-chap.text-nowrap.a-h")
+		returnData = append(returnData, entity.IndexData{
+			Title:          e.ChildText("div.genres-item-info > h3"),
+			Id:             strings.Split(e.ChildAttr("a", "href"), "/")[3],
+			Cover:          e.ChildAttr("a > img", "src"),
+			LastChapter:    lastChapter,
+			OriginalServer: fmt.Sprintf("https://m.manganelo.com/advanced_search?s=all&g_e=_41_&page=%v", pageNumber),
+		})
+	})
+
+	if err := c.Visit(fmt.Sprintf("https://m.manganelo.com/advanced_search?s=all&g_e=_41_&page=%v", pageNumber)); err != nil {
+		log.Info().Err(err)
+		return nil, err
+	}
+
+	return returnData, nil
+}
+
+func (m *mangaServiceImpl) ManganeloSearch(ctx context.Context, search string) ([]entity.SearchData, error) {
+
+	var returnData []entity.SearchData
+
+	pageCount := 3
+	currentPage := 1
+
+	re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
+	c := colly.NewCollector()
+	c.SetRequestTimeout(60 * time.Second)
+
+	c.OnHTML("body > div.body-site > div.container.container-main > div.container-main-left > div.panel-search-story > div.search-story-item", func(e *colly.HTMLElement) {
+
+		returnData = append(returnData, entity.SearchData{
+			Title:          e.ChildText("div.item-right > h3 > a"),
+			Id:             strings.Split(e.ChildAttr("a", "href"), "/")[3],
+			Cover:          e.ChildAttr("a > img", "src"),
+			LastChapter:    re.FindAllString(e.ChildText("div.item-right > a:nth-child(2)"), -1)[0],
+			OriginalServer: fmt.Sprintf("https://m.manganelo.com/search/story/%v?page=%v", search, currentPage),
+		})
+	})
+
+	for currentPage <= pageCount {
+		if err := c.Visit(fmt.Sprintf("https://m.manganelo.com/search/story/%v?page=%v", search, currentPage)); err != nil {
+			log.Info().Err(err)
+			return returnData, nil
+		}
+		currentPage++
+	}
+
+	return returnData, nil
+
+}
+
+func (m *mangaServiceImpl) ManganeloDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
+
+	var returnData entity.DetailData
+	var chapters []entity.Chapter
+
+	re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
+
+	c := colly.NewCollector()
+	c.SetRequestTimeout(60 * time.Second)
+
+	c.OnHTML("body > div.body-site > div.container.container-main > div.container-main-left > div.panel-story-info", func(e *colly.HTMLElement) {
+
+		removeText := strings.Split(e.ChildText("div.panel-story-info-description"), "Description :")
+		if len(removeText) > 1 {
+			returnData.Summary = removeText[1]
+		} else {
+			returnData.Summary = removeText[0]
+		}
+
+		returnData.Cover = e.ChildAttr("span.info-image > img.img-loading", "src")
+		returnData.Title = e.ChildText("div.story-info-right > h1")
+	})
+
+	c.OnHTML("body > div.body-site > div.container.container-main > div.container-main-left > div.panel-story-chapter-list > ul > li.a-h", func(e *colly.HTMLElement) {
+		chapters = append(chapters, entity.Chapter{
+			Name: re.FindAllString(e.ChildText("a"), -1)[0],
+			Id:   strings.Split(e.ChildAttr("a", "href"), "/")[4],
+		})
+	})
+
+	if err := c.Visit(fmt.Sprintf("https://m.manganelo.com/%v", mangaId)); err != nil {
+		log.Info().Err(err)
+		return returnData, err
+	}
+
+	returnData.OriginalServer = fmt.Sprintf("https://m.manganelo.com/%v", mangaId)
+	if len(chapters) == 0 {
+
+		c.OnHTML("body > div.body-site > div.container.container-main > div.container-main-left > div.panel-story-info", func(e *colly.HTMLElement) {
+
+			removeText := strings.Split(e.ChildText("div.panel-story-info-description"), "Description :")
+			if len(removeText) > 1 {
+				returnData.Summary = removeText[1]
+			} else {
+				returnData.Summary = removeText[0]
+			}
+
+			returnData.Cover = e.ChildAttr("span.info-image > img.img-loading", "src")
+			returnData.Title = e.ChildText("div.story-info-right > h1")
+		})
+
+		c.OnHTML("body > div.body-site > div.container.container-main > div.container-main-left > div.panel-story-chapter-list > ul > li.a-h", func(e *colly.HTMLElement) {
+			chapters = append(chapters, entity.Chapter{
+				Name: re.FindAllString(e.ChildText("a"), -1)[0],
+				Id:   strings.Split(e.ChildAttr("a", "href"), "/")[4],
+			})
+		})
+
+		if err := c.Visit(fmt.Sprintf("https://chapmanganelo.com/%v", mangaId)); err != nil {
+			log.Info().Err(err)
+			return returnData, err
+		}
+		returnData.OriginalServer = fmt.Sprintf("https://chapmanganelo.com/%v", mangaId)
+	}
+
+	returnData.Chapters = chapters
+	return returnData, nil
+
+}
+
+func (m *mangaServiceImpl) ManganeloChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
+
+	var data entity.ChapterData
+	var chapters []entity.Chapter
+	re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
+
+	c := colly.NewCollector()
+	c.SetRequestTimeout(60 * time.Second)
+
+	c.OnHTML("body > div.body-site > div.container.container-main > div.container-main-left > div.panel-story-chapter-list > ul > li.a-h", func(e *colly.HTMLElement) {
+		chapters = append(chapters, entity.Chapter{
+			Name: re.FindAllString(e.ChildText("a"), -1)[0],
+			Id:   strings.Split(e.ChildAttr("a", "href"), "/")[4],
+		})
+	})
+
+	if err := c.Visit(fmt.Sprintf("https://manganelo.com/%v", mangaId)); err != nil {
+		log.Info().Err(err)
+		return data, err
+	}
+	data.OriginalServer = fmt.Sprintf("https://manganelo.com/%v", mangaId)
+
+	if len(chapters) == 0 {
+		c.OnHTML("body > div.body-site > div.container.container-main > div.container-main-left > div.panel-story-chapter-list > ul > li.a-h", func(e *colly.HTMLElement) {
+			chapters = append(chapters, entity.Chapter{
+				Name: re.FindAllString(e.ChildText("a"), -1)[0],
+				Id:   strings.Split(e.ChildAttr("a", "href"), "/")[4],
+			})
+		})
+
+		if err := c.Visit(fmt.Sprintf("https://chapmanganelo.com/%v", mangaId)); err != nil {
+			log.Info().Err(err)
+			return data, err
+		}
+		data.OriginalServer = fmt.Sprintf("https://chapmanganelo.com/%v", mangaId)
+
+	}
+
+	data.Chapters = chapters
+	return data, nil
+}
+
+func (m *mangaServiceImpl) ManganeloImage(ctx context.Context, mangaId string, chapterId string) (entity.ImageData, error) {
+
+	var returnData entity.ImageData
+	var dataImages []entity.Image
+
+	c := colly.NewCollector()
+	c.SetRequestTimeout(60 * time.Second)
+
+	c.OnHTML("body > div.body-site > div.container-chapter-reader > img.reader-content", func(e *colly.HTMLElement) {
+		dataImages = append(dataImages, entity.Image{
+			Image: e.Attr("src"),
+		})
+
+	})
+
+	if err := c.Visit(fmt.Sprintf("https://chapmanganelo.com/%v/%v", mangaId, chapterId)); err != nil {
+		log.Info().Err(err)
+		return returnData, err
+	}
+
+	returnData.Images = dataImages
+	returnData.OriginalServer = fmt.Sprintf("https://chapmanganelo.com/%v/%v", mangaId, chapterId)
+	returnData.ChapterName = chapterId
+
+	return returnData, nil
+
 }
