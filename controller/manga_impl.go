@@ -158,6 +158,15 @@ func (s *mangaControllerImpl) Chapter(c *gin.Context) {
 		response.SuccesResponse(c, data)
 		return
 
+	case "asuracomic":
+		data, err := s.service.AsuraComicChapter(ctx, mangaId)
+		if err != nil {
+			response.ErrorResponse(c, err, nil)
+			return
+		}
+		response.SuccesResponse(c, data)
+		return
+
 	case "manganato":
 		data, err := s.service.ManganatoChapter(ctx, mangaId)
 		if err != nil {
