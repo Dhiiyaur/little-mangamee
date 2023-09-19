@@ -850,10 +850,9 @@ func (m *mangaServiceImpl) AsuraComicImage(ctx context.Context, chapterId string
 
 	c := colly.NewCollector()
 	c.SetRequestTimeout(60 * time.Second)
-	c.OnHTML("#readerarea > p", func(e *colly.HTMLElement) {
-
+	c.OnHTML("#readerarea > p > img", func(e *colly.HTMLElement) {
 		dataImages = append(dataImages, entity.Image{
-			Image: e.ChildAttr("img", "src"),
+			Image: e.Attr("src"),
 		})
 	})
 
@@ -861,6 +860,8 @@ func (m *mangaServiceImpl) AsuraComicImage(ctx context.Context, chapterId string
 		log.Info().Err(err)
 		return returnData, nil
 	}
+
+	// if len(dataImages)
 
 	returnData.Images = dataImages
 	returnData.OriginalServer = fmt.Sprintf("https://asuracomics.com/%v", chapterId)
