@@ -3,6 +3,41 @@ info:
   title: Mangamee
   version: 1.0.0
 paths:
+  //{baseurl}/api/manga/source:
+    get:
+
+      summary: source
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Date:
+              schema:
+                type: string
+                example: Sun, 27 Aug 2023 01:08:08 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '93'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  - mangabat
+                  - mangaread
+                  - mangatown
+                  - maidmy
+                  - asuracomic
+                  - manganato
+                  - manganelo
+                message: success
+                result_code: '00'
   //{baseurl}/api/manga/index:
     get:
       summary: index
@@ -508,41 +543,6 @@ paths:
                     - id: read-gh385100-chap-1
                       name: '1'
                   original_server: https://readmangabat.com/read-gh385100
-                message: success
-                result_code: '00'
-  //{baseurl}/api/manga/source:
-    get:
-
-      summary: source
-      responses:
-        '200':
-          description: OK
-          headers:
-            Content-Type:
-              schema:
-                type: string
-                example: application/json; charset=utf-8
-            Date:
-              schema:
-                type: string
-                example: Sun, 27 Aug 2023 01:08:08 GMT
-            Content-Length:
-              schema:
-                type: integer
-                example: '93'
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                data:
-                  - mangabat
-                  - mangaread
-                  - mangatown
-                  - maidmy
-                  - asuracomic
-                  - manganato
-                  - manganelo
                 message: success
                 result_code: '00'
   //{baseurl}/api/manga/detail:
