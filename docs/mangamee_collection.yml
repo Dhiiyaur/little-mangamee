@@ -3,7 +3,7 @@ info:
   title: Mangamee
   version: 1.0.0
 paths:
-  //{baseurl}/api/manga/source:
+  /api/manga/source:
     get:
 
       summary: source
@@ -38,7 +38,7 @@ paths:
                   - manganelo
                 message: success
                 result_code: '00'
-  //{baseurl}/api/manga/index:
+  /api/manga/index:
     get:
       summary: index
       parameters:
@@ -204,7 +204,7 @@ paths:
                     last_chapter: '66'
                 message: success
                 result_code: '00'
-  //{baseurl}/api/manga/search:
+  /api/manga/search:
     get:
       summary: search
       parameters:
@@ -252,7 +252,7 @@ paths:
                     last_chapter: '282'
                 message: success
                 result_code: '00'
-  //{baseurl}/api/manga/chapter:
+  /api/manga/chapter:
     get:
       summary: chapter
       parameters:
@@ -545,7 +545,7 @@ paths:
                   original_server: https://readmangabat.com/read-gh385100
                 message: success
                 result_code: '00'
-  //{baseurl}/api/manga/detail:
+  /api/manga/detail:
     get:
 
       summary: detail
@@ -849,7 +849,7 @@ paths:
                       name: '1'
                 message: success
                 result_code: '00'
-  //{baseurl}/api/manga/image:
+  /api/manga/image:
     get:
 
       summary: image
