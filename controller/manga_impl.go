@@ -117,6 +117,7 @@ func (s *mangaControllerImpl) Index(c *gin.Context) {
 		if len(mangaseeJsonData) == 0 {
 			mangaseeJsonData, err = s.service.MangaseeIndex(ctx)
 			if err != nil {
+				log.Info().Err(err).Msg("err")
 				response.ErrorResponse(c, err, nil)
 				return
 			}
@@ -127,6 +128,7 @@ func (s *mangaControllerImpl) Index(c *gin.Context) {
 			log.Info().Msg("Expired Data, Refetching")
 			mangaseeJsonData, err = s.service.MangaseeIndex(ctx)
 			if err != nil {
+				log.Info().Err(err).Msg("err")
 				response.ErrorResponse(c, err, nil)
 				return
 			}
@@ -135,12 +137,14 @@ func (s *mangaControllerImpl) Index(c *gin.Context) {
 
 		pageNumberInt, err := strconv.Atoi(pageNumber)
 		if err != nil {
+			log.Info().Err(err).Msg("err")
 			response.ErrorResponse(c, err, nil)
 			return
 		}
 
 		data, err := utils.PaginateIndex(mangaseeJsonData, pageNumberInt, 15)
 		if err != nil {
+			log.Info().Err(err).Msg("err")
 			response.ErrorResponse(c, err, nil)
 			return
 		}
