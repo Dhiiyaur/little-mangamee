@@ -1323,7 +1323,7 @@ func (m *mangaServiceImpl) MangaseeIndex(ctx context.Context) ([]entity.IndexDat
 			Title: v.Title,
 			// Id:    fmt.Sprintf("https://www.mangasee123.com/manga/%v", v.Id),
 			Id:             v.Id,
-			Cover:          fmt.Sprintf("https://temp.compsci88.com/cover/%v", v.Id),
+			Cover:          fmt.Sprintf("https://temp.compsci88.com/cover/%v.jpg", v.Id),
 			LastChapter:    lastChapter,
 			OriginalServer: "https://www.mangasee123.com/search/?sort=lt&desc=true",
 		})
