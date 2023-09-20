@@ -14,6 +14,7 @@ type IdentityErr struct {
 var (
 	ERR_INTERNAL_SERVER = errors.New("internal server error")
 	ERR_BAD_REQUEST     = errors.New("bad request")
+	ERR_NOT_FOUND       = errors.New("not found")
 )
 
 var (
@@ -27,6 +28,11 @@ var (
 			HttpCode:  http.StatusBadRequest,
 			ErrorCode: "S01",
 			Message:   ERR_BAD_REQUEST.Error(),
+		},
+		ERR_NOT_FOUND: {
+			HttpCode:  http.StatusNotFound,
+			ErrorCode: "S02",
+			Message:   ERR_NOT_FOUND.Error(),
 		},
 	}
 )

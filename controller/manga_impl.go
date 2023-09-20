@@ -3,11 +3,15 @@ package controller
 import (
 	"fmt"
 	"io/ioutil"
+	"little_mangamee/entity"
+	log "little_mangamee/logger"
 	"little_mangamee/response"
 	"little_mangamee/service"
 	"little_mangamee/utils"
 	"net/http"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,6 +19,9 @@ import (
 type mangaControllerImpl struct {
 	service service.MangaService
 }
+
+var mangaseeJsonData []entity.IndexData
+var mangaseeJsonDataExpired time.Time
 
 func NewMangaController(service service.MangaService) MangaController {
 	return &mangaControllerImpl{
@@ -24,7 +31,7 @@ func NewMangaController(service service.MangaService) MangaController {
 
 func (s *mangaControllerImpl) Source(c *gin.Context) {
 
-	data := []string{"mangabat", "mangaread", "mangatown", "maidmy", "asuracomic", "manganato", "manganelo"}
+	data := []string{"mangabat", "mangaread", "mangatown", "maidmy", "asuracomic", "manganato", "manganelo", "mangasee"}
 	response.SuccesResponse(c, data)
 	return
 }
@@ -104,6 +111,43 @@ func (s *mangaControllerImpl) Index(c *gin.Context) {
 		response.SuccesResponse(c, data)
 		return
 
+	case "mangasee":
+
+		var err error
+		if len(mangaseeJsonData) == 0 {
+			mangaseeJsonData, err = s.service.MangaseeIndex(ctx)
+			if err != nil {
+				response.ErrorResponse(c, err, nil)
+				return
+			}
+			mangaseeJsonDataExpired = time.Now()
+		}
+
+		if time.Now().UTC().After(mangaseeJsonDataExpired.Add(10 * time.Minute)) {
+			log.Info().Msg("Expired Data, Refetching")
+			mangaseeJsonData, err = s.service.MangaseeIndex(ctx)
+			if err != nil {
+				response.ErrorResponse(c, err, nil)
+				return
+			}
+			mangaseeJsonDataExpired = time.Now()
+		}
+
+		pageNumberInt, err := strconv.Atoi(pageNumber)
+		if err != nil {
+			response.ErrorResponse(c, err, nil)
+			return
+		}
+
+		data, err := utils.PaginateIndex(mangaseeJsonData, pageNumberInt, 15)
+		if err != nil {
+			response.ErrorResponse(c, err, nil)
+			return
+		}
+
+		response.SuccesResponse(c, data)
+		return
+
 	default:
 		response.ErrorResponse(c, utils.ERR_BAD_REQUEST, utils.ERR_BAD_REQUEST.Error())
 		return
@@ -178,6 +222,15 @@ func (s *mangaControllerImpl) Chapter(c *gin.Context) {
 
 	case "manganelo":
 		data, err := s.service.ManganeloChapter(ctx, mangaId)
+		if err != nil {
+			response.ErrorResponse(c, err, nil)
+			return
+		}
+		response.SuccesResponse(c, data)
+		return
+
+	case "mangasee":
+		data, err := s.service.MangaseeChapter(ctx, mangaId)
 		if err != nil {
 			response.ErrorResponse(c, err, nil)
 			return
@@ -267,6 +320,15 @@ func (s *mangaControllerImpl) Detail(c *gin.Context) {
 		response.SuccesResponse(c, data)
 		return
 
+	case "mangasee":
+		data, err := s.service.MangaseeDetail(ctx, mangaId)
+		if err != nil {
+			response.ErrorResponse(c, err, nil)
+			return
+		}
+		response.SuccesResponse(c, data)
+		return
+
 	default:
 		response.ErrorResponse(c, utils.ERR_BAD_REQUEST, utils.ERR_BAD_REQUEST.Error())
 		return
@@ -348,6 +410,42 @@ func (s *mangaControllerImpl) Search(c *gin.Context) {
 		response.SuccesResponse(c, data)
 		return
 
+	case "mangasee":
+
+		var err error
+		if len(mangaseeJsonData) == 0 {
+			mangaseeJsonData, err = s.service.MangaseeIndex(ctx)
+			if err != nil {
+				response.ErrorResponse(c, err, nil)
+				return
+			}
+			mangaseeJsonDataExpired = time.Now()
+		}
+
+		if time.Now().UTC().After(mangaseeJsonDataExpired.Add(10 * time.Minute)) {
+			log.Info().Msg("Expired Data, Refetching")
+			mangaseeJsonData, err = s.service.MangaseeIndex(ctx)
+			if err != nil {
+				response.ErrorResponse(c, err, nil)
+				return
+			}
+			mangaseeJsonDataExpired = time.Now()
+		}
+
+		data, err := utils.SearchIndex(mangaseeJsonData, title)
+		if err != nil {
+			response.ErrorResponse(c, err, nil)
+			return
+		}
+
+		if len(data) == 0 {
+			response.ErrorResponse(c, utils.ERR_NOT_FOUND, utils.ERR_NOT_FOUND.Error())
+			return
+		}
+
+		response.SuccesResponse(c, data)
+		return
+
 	default:
 		response.ErrorResponse(c, utils.ERR_BAD_REQUEST, utils.ERR_BAD_REQUEST.Error())
 		return
@@ -423,6 +521,15 @@ func (s *mangaControllerImpl) Image(c *gin.Context) {
 
 	case "manganelo":
 		data, err := s.service.ManganeloImage(ctx, mangaId, chapterId)
+		if err != nil {
+			response.ErrorResponse(c, err, nil)
+			return
+		}
+		response.SuccesResponse(c, data)
+		return
+
+	case "mangasee":
+		data, err := s.service.MangaseeImage(ctx, mangaId, chapterId)
 		if err != nil {
 			response.ErrorResponse(c, err, nil)
 			return

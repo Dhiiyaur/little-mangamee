@@ -36,6 +36,7 @@ paths:
                   - asuracomic
                   - manganato
                   - manganelo
+                  - mangasee
                 message: success
                 result_code: '00'
   /api/manga/index:

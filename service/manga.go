@@ -47,4 +47,9 @@ type MangaService interface {
 	ManganeloDetail(ctx context.Context, mangaId string) (entity.DetailData, error)
 	ManganeloChapter(ctx context.Context, mangaId string) (entity.ChapterData, error)
 	ManganeloImage(ctx context.Context, mangaId string, chapterId string) (entity.ImageData, error)
+	//
+	MangaseeIndex(ctx context.Context) ([]entity.IndexData, error)
+	MangaseeDetail(ctx context.Context, mangaId string) (entity.DetailData, error)
+	MangaseeChapter(ctx context.Context, mangaId string) (entity.ChapterData, error)
+	MangaseeImage(ctx context.Context, mangaId string, chapterId string) (entity.ImageData, error)
 }

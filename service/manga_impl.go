@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"little_mangamee/entity"
 	log "little_mangamee/logger"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -861,8 +863,6 @@ func (m *mangaServiceImpl) AsuraComicImage(ctx context.Context, chapterId string
 		return returnData, nil
 	}
 
-	// if len(dataImages)
-
 	returnData.Images = dataImages
 	returnData.OriginalServer = fmt.Sprintf("https://asuracomics.com/%v", chapterId)
 	returnData.ChapterName = chapterId
@@ -1233,6 +1233,255 @@ func (m *mangaServiceImpl) ManganeloImage(ctx context.Context, mangaId string, c
 	returnData.OriginalServer = fmt.Sprintf("https://chapmanganelo.com/%v/%v", mangaId, chapterId)
 	returnData.ChapterName = chapterId
 
+	return returnData, nil
+
+}
+
+type customDate struct {
+	time.Time
+}
+
+func (ct *customDate) UnmarshalJSON(b []byte) (err error) {
+
+	s := strings.Trim(string(b), "\"")
+	if s == "null" {
+		ct.Time = time.Time{}
+		return
+	}
+
+	if s == "0" {
+		ct.Time = time.Time{}
+		return
+	}
+
+	ct.Time, err = time.Parse(time.RFC3339, s)
+	return
+}
+
+func (m *mangaServiceImpl) MangaseeIndex(ctx context.Context) ([]entity.IndexData, error) {
+
+	var match string
+
+	type MangaseeData struct {
+		Id      string     `json:"i"`
+		Title   string     `json:"s"`
+		Date    customDate `json:"ls"`
+		Chapter string     `json:"l"`
+	}
+
+	c := colly.NewCollector()
+	c.OnHTML("script", func(e *colly.HTMLElement) {
+		scriptContent := e.Text // Get the text content of the <script> tag
+		re := regexp.MustCompile(`vm.Directory = \[(.*?)\];`)
+		match = re.FindString(scriptContent)
+	})
+
+	if err := c.Visit("https://www.mangasee123.com/search/?sort=lt&desc=true"); err != nil {
+		log.Info().Err(err)
+		return nil, err
+	}
+
+	jsonData := strings.Split(match, "vm.Directory = ")
+	jsonData = strings.Split(jsonData[1], "];")
+	cleanData := jsonData[0] + "]"
+
+	var mangaData []MangaseeData
+	err := json.Unmarshal([]byte(cleanData), &mangaData)
+	if err != nil {
+		log.Info().Err(err)
+		return nil, err
+	}
+
+	sort.Slice(mangaData, func(i, j int) bool { return mangaData[i].Date.Time.After(mangaData[j].Date.Time) })
+	var returnData []entity.IndexData
+
+	for _, v := range mangaData {
+
+		var lastChapter string
+		if v.Chapter == "N/A" {
+			lastChapter = "-"
+		} else {
+			lastChapter = strings.TrimPrefix(v.Chapter, "10")
+			lastChapter = strings.TrimSuffix(lastChapter, "0")
+		}
+
+		returnData = append(returnData, entity.IndexData{
+			Title: v.Title,
+			// Id:    fmt.Sprintf("https://www.mangasee123.com/manga/%v", v.Id),
+			Id:             v.Id,
+			Cover:          fmt.Sprintf("https://temp.compsci88.com/cover/%v", v.Id),
+			LastChapter:    lastChapter,
+			OriginalServer: "https://www.mangasee123.com/search/?sort=lt&desc=true",
+		})
+	}
+
+	return returnData, nil
+}
+
+func (m *mangaServiceImpl) MangaseeDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
+
+	var returnData entity.DetailData
+	var chapters []entity.Chapter
+	var cover, title, summary, baseChapter string
+
+	type MangaseeDataChapter struct {
+		Chapter string `json:"Chapter"`
+	}
+
+	c := colly.NewCollector()
+	c.OnHTML("body > div.container.MainContainer > div > div > div > div > div.row", func(e *colly.HTMLElement) {
+		if cover == "" {
+			cover = e.ChildAttr("div.col-md-3.col-sm-4.col-3.top-5 > img.img-fluid.bottom-5", "src")
+		}
+
+		if title == "" {
+			title = e.ChildText("div.bottom-10")
+		}
+
+		summary = summary + e.ChildText("div.top-5.Content")
+
+	})
+
+	c.OnHTML("script", func(e *colly.HTMLElement) {
+		scriptContent := e.Text // Get the text content of the <script> tag
+		re := regexp.MustCompile(`vm.Chapters = \[(.*?)\];`)
+		baseChapter = re.FindString(scriptContent)
+	})
+
+	if err := c.Visit(fmt.Sprintf("https://www.mangasee123.com/manga/%v", mangaId)); err != nil {
+		log.Info().Err(err)
+		return returnData, err
+	}
+
+	baseChapter = strings.Split(baseChapter, "vm.Chapters = ")[1]
+	baseChapter = strings.Split(baseChapter, ";")[0]
+	var mangaData []MangaseeDataChapter
+	err := json.Unmarshal([]byte(baseChapter), &mangaData)
+	if err != nil {
+		log.Info().Err(err)
+		return returnData, err
+	}
+
+	for _, v := range mangaData {
+
+		v.Chapter = strings.TrimPrefix(v.Chapter, "10")
+		v.Chapter = strings.TrimSuffix(v.Chapter, "0")
+
+		chapters = append(chapters, entity.Chapter{
+			Name: v.Chapter,
+			Id:   v.Chapter,
+		})
+	}
+
+	returnData.Chapters = chapters
+	returnData.Cover = cover
+	returnData.OriginalServer = fmt.Sprintf("https://www.mangasee123.com/manga/%v", mangaId)
+	returnData.Summary = summary
+	returnData.Title = title
+
+	return returnData, nil
+}
+
+func (m *mangaServiceImpl) MangaseeChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
+	var data entity.ChapterData
+	var chapters []entity.Chapter
+
+	var baseChapter string
+
+	type MangaseeDataChapter struct {
+		Chapter string `json:"Chapter"`
+	}
+
+	c := colly.NewCollector()
+	c.OnHTML("script", func(e *colly.HTMLElement) {
+		scriptContent := e.Text // Get the text content of the <script> tag
+		re := regexp.MustCompile(`vm.Chapters = \[(.*?)\];`)
+		baseChapter = re.FindString(scriptContent)
+	})
+
+	if err := c.Visit(fmt.Sprintf("https://www.mangasee123.com/manga/%v", mangaId)); err != nil {
+		log.Info().Err(err)
+		return data, err
+	}
+
+	baseChapter = strings.Split(baseChapter, "vm.Chapters = ")[1]
+	baseChapter = strings.Split(baseChapter, ";")[0]
+	var mangaData []MangaseeDataChapter
+	err := json.Unmarshal([]byte(baseChapter), &mangaData)
+	if err != nil {
+		log.Info().Err(err)
+		return data, err
+	}
+
+	for _, v := range mangaData {
+
+		v.Chapter = strings.TrimPrefix(v.Chapter, "10")
+		v.Chapter = strings.TrimSuffix(v.Chapter, "0")
+
+		chapters = append(chapters, entity.Chapter{
+			Name: v.Chapter,
+			Id:   v.Chapter,
+		})
+	}
+
+	data.Chapters = chapters
+	data.OriginalServer = fmt.Sprintf("https://www.mangasee123.com/manga/%v", mangaId)
+	return data, nil
+}
+
+func generateNumber(number int) string {
+	digit := "%03d"
+	return fmt.Sprintf(digit, number)
+}
+
+func (m *mangaServiceImpl) MangaseeImage(ctx context.Context, mangaId string, chapterId string) (entity.ImageData, error) {
+
+	var returnData entity.ImageData
+	var dataImages []entity.Image
+
+	var baseImages string
+
+	type MangaseeDataImage struct {
+		Page string `json:"Page"`
+	}
+
+	c := colly.NewCollector()
+	c.OnHTML("script", func(e *colly.HTMLElement) {
+		scriptContent := e.Text // Get the text content of the <script> tag
+		re := regexp.MustCompile(`vm.CurChapter = \{(.*?)\};`)
+		baseImages = re.FindString(scriptContent)
+	})
+
+	if err := c.Visit(fmt.Sprintf("https://www.mangasee123.com/read-online/%v-chapter-%v.html", mangaId, chapterId)); err != nil {
+		log.Info().Err(err)
+		return returnData, err
+	}
+
+	baseImages = strings.Split(baseImages, "vm.CurChapter = ")[1]
+	baseImages = strings.Split(baseImages, ";")[0]
+
+	var mangaData MangaseeDataImage
+	err := json.Unmarshal([]byte(baseImages), &mangaData)
+	if err != nil {
+		log.Info().Err(err)
+		return returnData, err
+	}
+
+	count, err := strconv.Atoi(mangaData.Page)
+	if err != nil {
+		log.Info().Err(err)
+		return returnData, err
+	}
+
+	for i := 1; i <= count; i++ {
+		dataImages = append(dataImages, entity.Image{
+			Image: fmt.Sprintf("https://official.lowee.us/manga/The-Final-Raid-Boss/%v-%v.png", chapterId, generateNumber(i)),
+		})
+	}
+
+	returnData.ChapterName = chapterId
+	returnData.Images = dataImages
+	returnData.OriginalServer = fmt.Sprintf("https://www.mangasee123.com/read-online/%v-chapter-%v.html", mangaId, chapterId)
 	return returnData, nil
 
 }
