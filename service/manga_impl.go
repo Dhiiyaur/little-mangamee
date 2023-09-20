@@ -1523,7 +1523,7 @@ func (m *mangaServiceImpl) MangaseeImage(ctx context.Context, mangaId string, ch
 
 	for i := 1; i <= count; i++ {
 		dataImages = append(dataImages, entity.Image{
-			Image: fmt.Sprintf("https://official.lowee.us/manga/The-Final-Raid-Boss/%v-%v.png", chapterId, generateNumber(i)),
+			Image: fmt.Sprintf("https://official.lowee.us/manga/%v/0%v-%v.png", mangaId, chapterId, generateNumber(i)),
 		})
 	}
 
