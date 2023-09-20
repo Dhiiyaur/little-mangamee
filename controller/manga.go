@@ -10,4 +10,5 @@ type MangaController interface {
 	Image(c *gin.Context)
 	Search(c *gin.Context)
 	MangabatProxy(c *gin.Context)
+	Redirect(c *gin.Context)
 }

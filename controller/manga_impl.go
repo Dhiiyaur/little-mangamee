@@ -550,7 +550,6 @@ func (s *mangaControllerImpl) Image(c *gin.Context) {
 func (s *mangaControllerImpl) MangabatProxy(c *gin.Context) {
 
 	imageProxy := c.Query("id")
-
 	req, err := http.NewRequest("GET", imageProxy, nil)
 	if err != nil {
 		response.ErrorResponse(c, err, nil)
@@ -574,5 +573,70 @@ func (s *mangaControllerImpl) MangabatProxy(c *gin.Context) {
 	}
 
 	c.Writer.Write(body)
+
+}
+
+func (s *mangaControllerImpl) Redirect(c *gin.Context) {
+
+	imageProxy := c.Query("id")
+	sourceManga := c.Query("source")
+
+	switch sourceManga {
+	case "mangasee":
+
+		var resp *http.Response
+		var err error
+
+		req, err := http.NewRequest("GET", imageProxy, nil)
+		if err != nil {
+			response.ErrorResponse(c, err, nil)
+			return
+		}
+
+		req.Header.Set("Referer", "https://mangasee123.com/")
+		req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36")
+
+		resp, err = http.DefaultClient.Do(req)
+		if err != nil {
+			response.ErrorResponse(c, err, nil)
+			return
+		}
+
+		defer resp.Body.Close()
+
+		if resp.StatusCode == http.StatusNotFound {
+
+			newImageProxy := strings.Replace(imageProxy, "official.lowee.us", "scans.lastation.us", -1)
+			fmt.Println(newImageProxy)
+			req, err := http.NewRequest("GET", newImageProxy, nil)
+			if err != nil {
+				response.ErrorResponse(c, err, nil)
+				return
+			}
+
+			req.Header.Set("Referer", "https://mangasee123.com/")
+			req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36")
+
+			resp, err = http.DefaultClient.Do(req)
+			if err != nil {
+				response.ErrorResponse(c, err, nil)
+				return
+			}
+
+			defer resp.Body.Close()
+		}
+
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			response.ErrorResponse(c, err, nil)
+			return
+		}
+
+		c.Writer.Write(body)
+
+	default:
+		response.ErrorResponse(c, utils.ERR_BAD_REQUEST, utils.ERR_BAD_REQUEST.Error())
+		return
+	}
 
 }

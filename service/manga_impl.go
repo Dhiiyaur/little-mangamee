@@ -1521,9 +1521,11 @@ func (m *mangaServiceImpl) MangaseeImage(ctx context.Context, mangaId string, ch
 		return returnData, err
 	}
 
+	api := "https://little-mangamee.vercel.app/api/manga/"
 	for i := 1; i <= count; i++ {
 		dataImages = append(dataImages, entity.Image{
-			Image: fmt.Sprintf("https://official.lowee.us/manga/%v/0%v-%v.png", mangaId, chapterId, generateNumber(i)),
+			Image: fmt.Sprintf("%vredirect?source=mangasee&id=https://official.lowee.us/manga/%v/0%v-%v.png", api, mangaId, chapterId, generateNumber(i)),
+			// Image: fmt.Sprintf("https://official.lowee.us/manga/%v/0%v-%v.png", mangaId, chapterId, generateNumber(i)),
 		})
 	}
 

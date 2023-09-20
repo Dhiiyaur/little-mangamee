@@ -60,6 +60,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	})
 
 	router.GET("api/manga/proxy", mangaController.MangabatProxy)
+	router.GET("api/manga/redirect", mangaController.Redirect)
 	router.GET("api/manga/source", mangaController.Source)
 	router.GET("api/manga/search", mangaController.Search)
 	router.GET("api/manga/index", mangaController.Index)
