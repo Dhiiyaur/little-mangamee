@@ -1270,13 +1270,27 @@ func (m *mangaServiceImpl) MangaseeIndex(ctx context.Context) ([]entity.IndexDat
 	}
 
 	c := colly.NewCollector()
+	c.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+
+	c.OnRequest(func(r *colly.Request) {
+		r.Headers.Set("Accept", "*/*")
+		r.Headers.Set("Referer", "https:/www.mangasee123.com/")
+		r.Headers.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36")
+
+	})
+
 	c.OnHTML("script", func(e *colly.HTMLElement) {
 		scriptContent := e.Text // Get the text content of the <script> tag
 		re := regexp.MustCompile(`vm.Directory = \[(.*?)\];`)
-		match = re.FindString(scriptContent)
+		if match == "" {
+			match = re.FindString(scriptContent)
+		}
+		// fmt.Println("what")
+		// fmt.Println(match)
 	})
 
-	if err := c.Visit("https://www.mangasee123.com/search/?sort=lt&desc=true"); err != nil {
+	// if err := c.Visit("https://www.mangasee123.com/search/?sort=lt&desc=true"); err != nil {
+	if err := c.Visit("https://www.manga4life.com/search/?sort=y&desc=true"); err != nil {
 		log.Info().Err(err)
 		return nil, err
 	}
@@ -1329,6 +1343,13 @@ func (m *mangaServiceImpl) MangaseeDetail(ctx context.Context, mangaId string) (
 	}
 
 	c := colly.NewCollector()
+	c.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+	c.OnRequest(func(r *colly.Request) {
+		r.Headers.Set("Accept", "*/*")
+		r.Headers.Set("Referer", "https:/www.mangasee123.com/")
+		r.Headers.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36")
+
+	})
 	c.OnHTML("body > div.container.MainContainer > div > div > div > div > div.row", func(e *colly.HTMLElement) {
 		if cover == "" {
 			cover = e.ChildAttr("div.col-md-3.col-sm-4.col-3.top-5 > img.img-fluid.bottom-5", "src")
@@ -1345,10 +1366,13 @@ func (m *mangaServiceImpl) MangaseeDetail(ctx context.Context, mangaId string) (
 	c.OnHTML("script", func(e *colly.HTMLElement) {
 		scriptContent := e.Text // Get the text content of the <script> tag
 		re := regexp.MustCompile(`vm.Chapters = \[(.*?)\];`)
-		baseChapter = re.FindString(scriptContent)
+		if baseChapter == "" {
+			baseChapter = re.FindString(scriptContent)
+		}
 	})
 
-	if err := c.Visit(fmt.Sprintf("https://www.mangasee123.com/manga/%v", mangaId)); err != nil {
+	if err := c.Visit(fmt.Sprintf("https://www.manga4life.com/manga/%v", mangaId)); err != nil {
+		// if err := c.Visit(fmt.Sprintf("https://www.mangasee123.com/manga/%v", mangaId)); err != nil {
 		log.Info().Err(err)
 		return returnData, err
 	}
@@ -1393,13 +1417,24 @@ func (m *mangaServiceImpl) MangaseeChapter(ctx context.Context, mangaId string) 
 	}
 
 	c := colly.NewCollector()
+	c.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+	c.OnRequest(func(r *colly.Request) {
+		r.Headers.Set("Accept", "*/*")
+		r.Headers.Set("Referer", "https:/www.mangasee123.com/")
+		r.Headers.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36")
+
+	})
+
 	c.OnHTML("script", func(e *colly.HTMLElement) {
 		scriptContent := e.Text // Get the text content of the <script> tag
 		re := regexp.MustCompile(`vm.Chapters = \[(.*?)\];`)
-		baseChapter = re.FindString(scriptContent)
+		if baseChapter == "" {
+			baseChapter = re.FindString(scriptContent)
+		}
 	})
 
-	if err := c.Visit(fmt.Sprintf("https://www.mangasee123.com/manga/%v", mangaId)); err != nil {
+	if err := c.Visit(fmt.Sprintf("https://www.manga4life.com/manga/%v", mangaId)); err != nil {
+		// if err := c.Visit(fmt.Sprintf("https://www.mangasee123.com/manga/%v", mangaId)); err != nil {
 		log.Info().Err(err)
 		return data, err
 	}
@@ -1446,13 +1481,26 @@ func (m *mangaServiceImpl) MangaseeImage(ctx context.Context, mangaId string, ch
 	}
 
 	c := colly.NewCollector()
+
+	c.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+	c.OnRequest(func(r *colly.Request) {
+		r.Headers.Set("Accept", "*/*")
+		r.Headers.Set("Referer", "https:/www.mangasee123.com/")
+		r.Headers.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36")
+
+	})
+
 	c.OnHTML("script", func(e *colly.HTMLElement) {
 		scriptContent := e.Text // Get the text content of the <script> tag
 		re := regexp.MustCompile(`vm.CurChapter = \{(.*?)\};`)
-		baseImages = re.FindString(scriptContent)
+
+		if baseImages == "" {
+			baseImages = re.FindString(scriptContent)
+		}
 	})
 
-	if err := c.Visit(fmt.Sprintf("https://www.mangasee123.com/read-online/%v-chapter-%v.html", mangaId, chapterId)); err != nil {
+	if err := c.Visit(fmt.Sprintf("https://www.manga4life.com/read-online/%v-chapter-%v.html", mangaId, chapterId)); err != nil {
+		// if err := c.Visit(fmt.Sprintf("https://www.mangasee123.com/read-online/%v-chapter-%v.html", mangaId, chapterId)); err != nil {
 		log.Info().Err(err)
 		return returnData, err
 	}
