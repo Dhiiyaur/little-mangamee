@@ -1315,13 +1315,20 @@ func (m *mangaServiceImpl) MangaseeIndex(ctx context.Context) ([]entity.IndexDat
 		if v.Chapter == "N/A" {
 			lastChapter = "-"
 		} else {
-			lastChapter = strings.TrimPrefix(v.Chapter, "10")
-			lastChapter = strings.TrimSuffix(lastChapter, "0")
+
+			splitChapter := strings.Split(v.Chapter, "")
+			lastChapter = fmt.Sprintf("%v%v%v%v", splitChapter[1], splitChapter[2], splitChapter[3], splitChapter[4])
+			if splitChapter[5] != "0" {
+				lastChapter = fmt.Sprintf("%v.%v", lastChapter, splitChapter[5])
+			}
+			lastChapter = strings.TrimLeft(lastChapter, "0")
+
+			// lastChapter = strings.TrimPrefix(v.Chapter, "10")
+			// lastChapter = strings.TrimSuffix(lastChapter, "0")
 		}
 
 		returnData = append(returnData, entity.IndexData{
-			Title: v.Title,
-			// Id:    fmt.Sprintf("https://www.mangasee123.com/manga/%v", v.Id),
+			Title:          v.Title,
 			Id:             v.Id,
 			Cover:          fmt.Sprintf("https://temp.compsci88.com/cover/%v.jpg", v.Id),
 			LastChapter:    lastChapter,
@@ -1388,11 +1395,18 @@ func (m *mangaServiceImpl) MangaseeDetail(ctx context.Context, mangaId string) (
 
 	for _, v := range mangaData {
 
-		v.Chapter = strings.TrimPrefix(v.Chapter, "10")
-		v.Chapter = strings.TrimSuffix(v.Chapter, "0")
+		var chapterName string
+		splitChapter := strings.Split(v.Chapter, "")
+		chapterName = fmt.Sprintf("%v%v%v%v", splitChapter[1], splitChapter[2], splitChapter[3], splitChapter[4])
+		if splitChapter[5] != "0" {
+			chapterName = fmt.Sprintf("%v.%v", chapterName, splitChapter[5])
+		}
+		chapterName = strings.TrimLeft(chapterName, "0")
+		// v.Chapter = strings.TrimPrefix(v.Chapter, "10")
+		// v.Chapter = strings.TrimSuffix(v.Chapter, "0")
 
 		chapters = append(chapters, entity.Chapter{
-			Name: v.Chapter,
+			Name: chapterName,
 			Id:   v.Chapter,
 		})
 	}
@@ -1450,13 +1464,28 @@ func (m *mangaServiceImpl) MangaseeChapter(ctx context.Context, mangaId string) 
 
 	for _, v := range mangaData {
 
-		v.Chapter = strings.TrimPrefix(v.Chapter, "10")
-		v.Chapter = strings.TrimSuffix(v.Chapter, "0")
+		var chapterName string
+		splitChapter := strings.Split(v.Chapter, "")
+		chapterName = fmt.Sprintf("%v%v%v%v", splitChapter[1], splitChapter[2], splitChapter[3], splitChapter[4])
+		if splitChapter[5] != "0" {
+			chapterName = fmt.Sprintf("%v.%v", chapterName, splitChapter[5])
+		}
+		chapterName = strings.TrimLeft(chapterName, "0")
+		// v.Chapter = strings.TrimPrefix(v.Chapter, "10")
+		// v.Chapter = strings.TrimSuffix(v.Chapter, "0")
 
 		chapters = append(chapters, entity.Chapter{
-			Name: v.Chapter,
+			Name: chapterName,
 			Id:   v.Chapter,
 		})
+
+		// v.Chapter = strings.TrimPrefix(v.Chapter, "10")
+		// v.Chapter = strings.TrimSuffix(v.Chapter, "0")
+
+		// chapters = append(chapters, entity.Chapter{
+		// 	Name: v.Chapter,
+		// 	Id:   v.Chapter,
+		// })
 	}
 
 	data.Chapters = chapters
@@ -1480,8 +1509,16 @@ func (m *mangaServiceImpl) MangaseeImage(ctx context.Context, mangaId string, ch
 		Page string `json:"Page"`
 	}
 
-	c := colly.NewCollector()
+	var index, cleanChapterId string
+	splitChapter := strings.Split(chapterId, "")
+	index = splitChapter[0]
+	cleanChapterId = fmt.Sprintf("%v%v%v%v", splitChapter[1], splitChapter[2], splitChapter[3], splitChapter[4])
+	if splitChapter[5] != "0" {
+		cleanChapterId = fmt.Sprintf("%v.%v", cleanChapterId, splitChapter[5])
+	}
+	cleanChapterId = strings.TrimLeft(cleanChapterId, "0")
 
+	c := colly.NewCollector()
 	c.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
 	c.OnRequest(func(r *colly.Request) {
 		r.Headers.Set("Accept", "*/*")
@@ -1499,7 +1536,9 @@ func (m *mangaServiceImpl) MangaseeImage(ctx context.Context, mangaId string, ch
 		}
 	})
 
-	if err := c.Visit(fmt.Sprintf("https://www.manga4life.com/read-online/%v-chapter-%v.html", mangaId, chapterId)); err != nil {
+	// https: //www.mangasee123.com/read-online/Onepunch-Man-chapter-189-index-2.html
+
+	if err := c.Visit(fmt.Sprintf("https://www.manga4life.com/read-online/%v-chapter-%v-index-%v.html", mangaId, cleanChapterId, index)); err != nil {
 		// if err := c.Visit(fmt.Sprintf("https://www.mangasee123.com/read-online/%v-chapter-%v.html", mangaId, chapterId)); err != nil {
 		log.Info().Err(err)
 		return returnData, err
@@ -1524,7 +1563,7 @@ func (m *mangaServiceImpl) MangaseeImage(ctx context.Context, mangaId string, ch
 	api := "https://little-mangamee.vercel.app/api/manga/"
 	for i := 1; i <= count; i++ {
 		dataImages = append(dataImages, entity.Image{
-			Image: fmt.Sprintf("%vredirect?source=mangasee&id=https://official.lowee.us/manga/%v/0%v-%v.png", api, mangaId, chapterId, generateNumber(i)),
+			Image: fmt.Sprintf("%vredirect?source=mangasee&id=https://official.lowee.us/manga/%v/0%v-%v.png", api, mangaId, cleanChapterId, generateNumber(i)),
 			// Image: fmt.Sprintf("https://official.lowee.us/manga/%v/0%v-%v.png", mangaId, chapterId, generateNumber(i)),
 		})
 	}
