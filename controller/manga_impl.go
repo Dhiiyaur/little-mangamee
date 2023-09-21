@@ -586,8 +586,9 @@ func (s *mangaControllerImpl) Redirect(c *gin.Context) {
 
 		var resp *http.Response
 		var err error
+		// https://hot.leanbox.us/manga/Onepunch-Man/0118-010.png
 
-		webList := []string{"official.lowee.us", "scans.lastation.us", "scans-hot.leanbox.us"}
+		webList := []string{"official.lowee.us", "scans.lastation.us", "scans-hot.leanbox.us", "hot.leanbox.us"}
 		for _, v := range webList {
 			newImageProxy := strings.Replace(imageProxy, "official.lowee.us", v, -1)
 			fmt.Println(newImageProxy)
