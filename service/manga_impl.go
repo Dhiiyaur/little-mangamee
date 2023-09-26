@@ -42,6 +42,7 @@ func (m *mangaServiceImpl) MangabatSearch(ctx context.Context, search string) ([
 	})
 
 	if err := c.Visit("https://m.mangabat.com/search/manga/" + search); err != nil {
+		log.Info().Err(err).Msg("ERROR")
 		return returnData, err
 	}
 
@@ -67,7 +68,7 @@ func (m *mangaServiceImpl) MangabatIndex(ctx context.Context, pageNumber string)
 	})
 
 	if err := c.Visit("https://m.mangabat.com/manga-list-all/" + pageNumber + "/"); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return nil, err
 	}
 	return returnData, nil
@@ -100,6 +101,7 @@ func (m *mangaServiceImpl) MangabatDetail(ctx context.Context, mangaId string) (
 	})
 
 	if err := c.Visit("https://readmangabat.com/" + mangaId + "/"); err != nil {
+		log.Info().Err(err).Msg("ERROR")
 		return returnData, err
 	}
 
@@ -127,7 +129,7 @@ func (m *mangaServiceImpl) MangabatChapter(ctx context.Context, mangaId string) 
 	})
 
 	if err := c.Visit("https://readmangabat.com/" + mangaId + "/"); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return data, err
 	}
 
@@ -155,6 +157,7 @@ func (m *mangaServiceImpl) MangabatImage(ctx context.Context, chapterId string) 
 	})
 
 	if err := c.Visit("https://readmangabat.com/" + chapterId + "/"); err != nil {
+		log.Info().Err(err).Msg("ERROR")
 		return returnData, err
 	}
 
@@ -202,6 +205,7 @@ func (m *mangaServiceImpl) MangareadSearch(ctx context.Context, search string) (
 	})
 
 	if err := c.Visit("https://www.mangaread.org/?s=" + search + "&post_type=wp-manga"); err != nil {
+		log.Info().Err(err).Msg("ERROR")
 		return returnData, err
 	}
 
@@ -232,7 +236,7 @@ func (m *mangaServiceImpl) MangareadIndex(ctx context.Context, pageNumber string
 	})
 
 	if err := c.Visit("https://www.mangaread.org/manga/?m_orderby=new-manga&page=" + pageNumber); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return nil, err
 	}
 
@@ -274,6 +278,7 @@ func (m *mangaServiceImpl) MangareadDetail(ctx context.Context, mangaId string) 
 	})
 
 	if err := c.Visit("https://www.mangaread.org/manga/" + mangaId); err != nil {
+		log.Info().Err(err).Msg("ERROR")
 		return returnData, err
 	}
 
@@ -301,7 +306,7 @@ func (m *mangaServiceImpl) MangareadChapter(ctx context.Context, mangaId string)
 	})
 
 	if err := c.Visit("https://www.mangaread.org/manga/" + mangaId); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return data, err
 	}
 
@@ -323,6 +328,7 @@ func (m *mangaServiceImpl) MangareadImage(ctx context.Context, mangaId string, c
 
 	})
 	if err := c.Visit("https://www.mangaread.org/manga/" + mangaId + "/" + chapterId); err != nil {
+		log.Info().Err(err).Msg("ERROR")
 		return returnData, err
 	}
 
@@ -353,6 +359,7 @@ func (m *mangaServiceImpl) MangatownSearch(ctx context.Context, search string) (
 	})
 
 	if err := c.Visit("https://www.mangatown.com/search?name=" + search); err != nil {
+		log.Info().Err(err).Msg("ERROR")
 		return returnData, err
 	}
 
@@ -384,7 +391,7 @@ func (m *mangaServiceImpl) MangatownIndex(ctx context.Context, pageNumber string
 
 	})
 	if err := c.Visit("https://www.mangatown.com/hot/" + pageNumber + ".htm?wviews.za"); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return nil, err
 	}
 
@@ -426,6 +433,7 @@ func (m *mangaServiceImpl) MangatownDetail(ctx context.Context, mangaId string) 
 	})
 
 	if err := c.Visit("https://www.mangatown.com/manga/" + mangaId); err != nil {
+		log.Info().Err(err).Msg("ERROR")
 		return returnData, err
 	}
 
@@ -460,7 +468,7 @@ func (m *mangaServiceImpl) MangatownChapter(ctx context.Context, mangaId string)
 	})
 
 	if err := c.Visit("https://www.mangatown.com/manga/" + mangaId); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return data, err
 	}
 
@@ -483,6 +491,8 @@ func (m *mangaServiceImpl) MangatownImage(ctx context.Context, mangaId string, c
 	})
 
 	if err := c.Visit("https://www.mangatown.com/manga/" + mangaId + "/" + chapterId + "/"); err != nil {
+		log.Info().Err(err).Msg("ERROR")
+
 		return returnData, err
 	}
 
@@ -583,6 +593,8 @@ func (m *mangaServiceImpl) MaidmySearch(ctx context.Context, search string) ([]e
 	})
 
 	if err := c.Visit("https://www.maid.my.id/?s=" + search); err != nil {
+		log.Info().Err(err).Msg("ERROR")
+
 		return returnData, err
 	}
 
@@ -613,7 +625,7 @@ func (m *mangaServiceImpl) MaidmyIndex(ctx context.Context, pageNumber string) (
 	})
 
 	if err := c.Visit("https://www.maid.my.id/page/" + pageNumber + "/"); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return nil, err
 	}
 
@@ -662,6 +674,8 @@ func (m *mangaServiceImpl) MaidmyDetail(ctx context.Context, mangaId string) (en
 	})
 
 	if err := c.Visit("https://www.maid.my.id/manga/" + mangaId + "/"); err != nil {
+		log.Info().Err(err).Msg("ERROR")
+
 		return returnData, err
 	}
 
@@ -688,7 +702,7 @@ func (m *mangaServiceImpl) MaidmyChapter(ctx context.Context, mangaId string) (e
 	})
 
 	if err := c.Visit("https://www.maid.my.id/manga/" + mangaId + "/"); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return data, err
 	}
 
@@ -738,8 +752,10 @@ func (m *mangaServiceImpl) AsuraComicIndex(ctx context.Context, pageNumber strin
 		})
 	})
 
-	if err := c.Visit(fmt.Sprintf("https://asuracomics.com/manga/?page=%v&order=update", pageNumber)); err != nil {
-		log.Info().Err(err)
+	// if err := c.Visit(fmt.Sprintf("https://asuracomics.com/manga/?page=%v&order=update", pageNumber)); err != nil {
+	if err := c.Visit(fmt.Sprintf("https://asuracomics.gg/manga/?page=&v&order=update", pageNumber)); err != nil {
+		// fmt.Println(err)
+		log.Info().Err(err).Msg("ERROR")
 		return nil, err
 	}
 
@@ -767,7 +783,7 @@ func (m *mangaServiceImpl) AsuraComicSearch(ctx context.Context, search string) 
 
 	for currentPage <= pageCount {
 		if err := c.Visit(fmt.Sprintf("https://asuracomics.com/page/%v/?s=%v", currentPage, search)); err != nil {
-			log.Info().Err(err)
+			log.Info().Err(err).Msg("ERROR")
 			return returnData, nil
 		}
 		currentPage++
@@ -807,7 +823,7 @@ func (m *mangaServiceImpl) AsuraComicDetail(ctx context.Context, mangaId string)
 	})
 
 	if err := c.Visit(fmt.Sprintf("https://asuracomics.com/manga/%v", mangaId)); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return returnData, nil
 	}
 
@@ -836,7 +852,7 @@ func (m *mangaServiceImpl) AsuraComicChapter(ctx context.Context, mangaId string
 	})
 
 	if err := c.Visit(fmt.Sprintf("https://asuracomics.com/manga/%v", mangaId)); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return data, nil
 	}
 
@@ -893,7 +909,7 @@ func (m *mangaServiceImpl) ManganatoSearch(ctx context.Context, search string) (
 
 	for currentPage <= pageCount {
 		if err := c.Visit(fmt.Sprintf("https://manganato.com/search/story/%v?page=%v", search, currentPage)); err != nil {
-			log.Info().Err(err)
+			log.Info().Err(err).Msg("ERROR")
 			return returnData, nil
 		}
 		currentPage++
@@ -921,7 +937,7 @@ func (m *mangaServiceImpl) ManganatoIndex(ctx context.Context, pageNumber string
 	})
 
 	if err := c.Visit(fmt.Sprintf("https://manganato.com/advanced_search?s=all&g_e=_41_&page=%v", pageNumber)); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return nil, err
 	}
 
@@ -961,7 +977,7 @@ func (m *mangaServiceImpl) ManganatoDetail(ctx context.Context, mangaId string) 
 	})
 
 	if err := c.Visit(fmt.Sprintf("https://chapmanganato.com/%v", mangaId)); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return returnData, err
 	}
 
@@ -990,7 +1006,7 @@ func (m *mangaServiceImpl) ManganatoChapter(ctx context.Context, mangaId string)
 	})
 
 	if err := c.Visit(fmt.Sprintf("https://chapmanganato.com/%v", mangaId)); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return data, err
 	}
 
@@ -1015,7 +1031,7 @@ func (m *mangaServiceImpl) ManganatoImage(ctx context.Context, mangaId string, c
 	})
 
 	if err := c.Visit(fmt.Sprintf("https://chapmanganato.com/%v/%v", mangaId, chapterId)); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return returnData, err
 	}
 
@@ -1056,7 +1072,7 @@ func (m *mangaServiceImpl) ManganeloIndex(ctx context.Context, pageNumber string
 	})
 
 	if err := c.Visit(fmt.Sprintf("https://m.manganelo.com/advanced_search?s=all&g_e=_41_&page=%v", pageNumber)); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return nil, err
 	}
 
@@ -1087,7 +1103,7 @@ func (m *mangaServiceImpl) ManganeloSearch(ctx context.Context, search string) (
 
 	for currentPage <= pageCount {
 		if err := c.Visit(fmt.Sprintf("https://m.manganelo.com/search/story/%v?page=%v", search, currentPage)); err != nil {
-			log.Info().Err(err)
+			log.Info().Err(err).Msg("ERROR")
 			return returnData, nil
 		}
 		currentPage++
@@ -1128,7 +1144,7 @@ func (m *mangaServiceImpl) ManganeloDetail(ctx context.Context, mangaId string) 
 	})
 
 	if err := c.Visit(fmt.Sprintf("https://m.manganelo.com/%v", mangaId)); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return returnData, err
 	}
 
@@ -1156,7 +1172,7 @@ func (m *mangaServiceImpl) ManganeloDetail(ctx context.Context, mangaId string) 
 		})
 
 		if err := c.Visit(fmt.Sprintf("https://chapmanganelo.com/%v", mangaId)); err != nil {
-			log.Info().Err(err)
+			log.Info().Err(err).Msg("ERROR")
 			return returnData, err
 		}
 		returnData.OriginalServer = fmt.Sprintf("https://chapmanganelo.com/%v", mangaId)
@@ -1198,7 +1214,7 @@ func (m *mangaServiceImpl) ManganeloChapter(ctx context.Context, mangaId string)
 		})
 
 		if err := c.Visit(fmt.Sprintf("https://chapmanganelo.com/%v", mangaId)); err != nil {
-			log.Info().Err(err)
+			log.Info().Err(err).Msg("ERROR")
 			return data, err
 		}
 		data.OriginalServer = fmt.Sprintf("https://chapmanganelo.com/%v", mangaId)
@@ -1225,7 +1241,7 @@ func (m *mangaServiceImpl) ManganeloImage(ctx context.Context, mangaId string, c
 	})
 
 	if err := c.Visit(fmt.Sprintf("https://chapmanganelo.com/%v/%v", mangaId, chapterId)); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return returnData, err
 	}
 
@@ -1291,7 +1307,7 @@ func (m *mangaServiceImpl) MangaseeIndex(ctx context.Context) ([]entity.IndexDat
 
 	// if err := c.Visit("https://www.mangasee123.com/search/?sort=lt&desc=true"); err != nil {
 	if err := c.Visit("https://www.manga4life.com/search/?sort=y&desc=true"); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return nil, err
 	}
 
@@ -1302,7 +1318,7 @@ func (m *mangaServiceImpl) MangaseeIndex(ctx context.Context) ([]entity.IndexDat
 	mangaData := []MangaseeData{}
 	err := json.Unmarshal([]byte(cleanData), &mangaData)
 	if err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return nil, err
 	}
 
@@ -1380,7 +1396,7 @@ func (m *mangaServiceImpl) MangaseeDetail(ctx context.Context, mangaId string) (
 
 	if err := c.Visit(fmt.Sprintf("https://www.manga4life.com/manga/%v", mangaId)); err != nil {
 		// if err := c.Visit(fmt.Sprintf("https://www.mangasee123.com/manga/%v", mangaId)); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return returnData, err
 	}
 
@@ -1389,7 +1405,7 @@ func (m *mangaServiceImpl) MangaseeDetail(ctx context.Context, mangaId string) (
 	var mangaData []MangaseeDataChapter
 	err := json.Unmarshal([]byte(baseChapter), &mangaData)
 	if err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return returnData, err
 	}
 
@@ -1449,7 +1465,7 @@ func (m *mangaServiceImpl) MangaseeChapter(ctx context.Context, mangaId string) 
 
 	if err := c.Visit(fmt.Sprintf("https://www.manga4life.com/manga/%v", mangaId)); err != nil {
 		// if err := c.Visit(fmt.Sprintf("https://www.mangasee123.com/manga/%v", mangaId)); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return data, err
 	}
 
@@ -1458,7 +1474,7 @@ func (m *mangaServiceImpl) MangaseeChapter(ctx context.Context, mangaId string) 
 	var mangaData []MangaseeDataChapter
 	err := json.Unmarshal([]byte(baseChapter), &mangaData)
 	if err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return data, err
 	}
 
@@ -1540,7 +1556,7 @@ func (m *mangaServiceImpl) MangaseeImage(ctx context.Context, mangaId string, ch
 
 	if err := c.Visit(fmt.Sprintf("https://www.manga4life.com/read-online/%v-chapter-%v-index-%v.html", mangaId, cleanChapterId, index)); err != nil {
 		// if err := c.Visit(fmt.Sprintf("https://www.mangasee123.com/read-online/%v-chapter-%v.html", mangaId, chapterId)); err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return returnData, err
 	}
 
@@ -1550,13 +1566,13 @@ func (m *mangaServiceImpl) MangaseeImage(ctx context.Context, mangaId string, ch
 	var mangaData MangaseeDataImage
 	err := json.Unmarshal([]byte(baseImages), &mangaData)
 	if err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return returnData, err
 	}
 
 	count, err := strconv.Atoi(mangaData.Page)
 	if err != nil {
-		log.Info().Err(err)
+		log.Info().Err(err).Msg("ERROR")
 		return returnData, err
 	}
 
