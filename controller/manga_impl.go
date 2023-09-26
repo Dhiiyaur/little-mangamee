@@ -90,6 +90,7 @@ func (s *mangaControllerImpl) Index(c *gin.Context) {
 			response.ErrorResponse(c, err, nil)
 			return
 		}
+
 		response.SuccesResponse(c, data)
 		return
 

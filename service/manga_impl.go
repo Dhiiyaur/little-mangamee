@@ -23,7 +23,8 @@ func NewMangaService() MangaService {
 
 func (m *mangaServiceImpl) MangabatSearch(ctx context.Context, search string) ([]entity.SearchData, error) {
 
-	var returnData []entity.SearchData
+	// var returnData []entity.SearchData
+	returnData := []entity.SearchData{}
 
 	c := colly.NewCollector()
 
@@ -48,7 +49,7 @@ func (m *mangaServiceImpl) MangabatSearch(ctx context.Context, search string) ([
 }
 func (m *mangaServiceImpl) MangabatIndex(ctx context.Context, pageNumber string) ([]entity.IndexData, error) {
 
-	var returnData []entity.IndexData
+	returnData := []entity.IndexData{}
 
 	c := colly.NewCollector()
 	c.OnHTML(".list-story-item", func(e *colly.HTMLElement) {
@@ -73,7 +74,7 @@ func (m *mangaServiceImpl) MangabatIndex(ctx context.Context, pageNumber string)
 }
 func (m *mangaServiceImpl) MangabatDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
 
-	var returnData entity.DetailData
+	returnData := entity.DetailData{}
 	var chapters []entity.Chapter
 
 	c := colly.NewCollector()
@@ -108,7 +109,7 @@ func (m *mangaServiceImpl) MangabatDetail(ctx context.Context, mangaId string) (
 }
 func (m *mangaServiceImpl) MangabatChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
 
-	var data entity.ChapterData
+	data := entity.ChapterData{}
 	var chapters []entity.Chapter
 
 	c := colly.NewCollector()
@@ -136,7 +137,7 @@ func (m *mangaServiceImpl) MangabatChapter(ctx context.Context, mangaId string) 
 }
 func (m *mangaServiceImpl) MangabatImage(ctx context.Context, chapterId string) (entity.ImageData, error) {
 
-	var returnData entity.ImageData
+	returnData := entity.ImageData{}
 	var dataImages []entity.Image
 	var name string
 
@@ -176,7 +177,7 @@ func (m *mangaServiceImpl) MangabatImage(ctx context.Context, chapterId string) 
 
 func (m *mangaServiceImpl) MangareadSearch(ctx context.Context, search string) ([]entity.SearchData, error) {
 
-	var returnData []entity.SearchData
+	returnData := []entity.SearchData{}
 
 	c := colly.NewCollector()
 	c.OnHTML(".row.c-tabs-item__content", func(e *colly.HTMLElement) {
@@ -208,7 +209,7 @@ func (m *mangaServiceImpl) MangareadSearch(ctx context.Context, search string) (
 }
 func (m *mangaServiceImpl) MangareadIndex(ctx context.Context, pageNumber string) ([]entity.IndexData, error) {
 
-	var returnData []entity.IndexData
+	returnData := []entity.IndexData{}
 
 	c := colly.NewCollector()
 	c.OnHTML(".page-item-detail.manga", func(e *colly.HTMLElement) {
@@ -239,7 +240,7 @@ func (m *mangaServiceImpl) MangareadIndex(ctx context.Context, pageNumber string
 }
 func (m *mangaServiceImpl) MangareadDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
 
-	var returnData entity.DetailData
+	returnData := entity.DetailData{}
 	var chapters []entity.Chapter
 	limit := 0
 
@@ -283,7 +284,7 @@ func (m *mangaServiceImpl) MangareadDetail(ctx context.Context, mangaId string) 
 }
 func (m *mangaServiceImpl) MangareadChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
 
-	var data entity.ChapterData
+	data := entity.ChapterData{}
 	var chapters []entity.Chapter
 
 	c := colly.NewCollector()
@@ -310,7 +311,7 @@ func (m *mangaServiceImpl) MangareadChapter(ctx context.Context, mangaId string)
 }
 func (m *mangaServiceImpl) MangareadImage(ctx context.Context, mangaId string, chapterId string) (entity.ImageData, error) {
 
-	var returnData entity.ImageData
+	returnData := entity.ImageData{}
 	var dataImages []entity.Image
 	c := colly.NewCollector()
 
@@ -337,7 +338,7 @@ func (m *mangaServiceImpl) MangareadImage(ctx context.Context, mangaId string, c
 
 func (m *mangaServiceImpl) MangatownSearch(ctx context.Context, search string) ([]entity.SearchData, error) {
 
-	var returnData []entity.SearchData
+	returnData := []entity.SearchData{}
 	c := colly.NewCollector()
 	c.OnHTML(".manga_pic_list > li", func(e *colly.HTMLElement) {
 
@@ -359,7 +360,7 @@ func (m *mangaServiceImpl) MangatownSearch(ctx context.Context, search string) (
 }
 func (m *mangaServiceImpl) MangatownIndex(ctx context.Context, pageNumber string) ([]entity.IndexData, error) {
 
-	var returnData []entity.IndexData
+	returnData := []entity.IndexData{}
 
 	c := colly.NewCollector()
 	c.OnHTML("body > section > article > div > div.manga_pic_content > ul.manga_pic_list > li", func(e *colly.HTMLElement) {
@@ -391,7 +392,7 @@ func (m *mangaServiceImpl) MangatownIndex(ctx context.Context, pageNumber string
 }
 func (m *mangaServiceImpl) MangatownDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
 
-	var returnData entity.DetailData
+	returnData := entity.DetailData{}
 	var chapters []entity.Chapter
 
 	c := colly.NewCollector()
@@ -435,7 +436,7 @@ func (m *mangaServiceImpl) MangatownDetail(ctx context.Context, mangaId string) 
 }
 func (m *mangaServiceImpl) MangatownChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
 
-	var data entity.ChapterData
+	data := entity.ChapterData{}
 	var chapters []entity.Chapter
 
 	c := colly.NewCollector()
@@ -469,7 +470,7 @@ func (m *mangaServiceImpl) MangatownChapter(ctx context.Context, mangaId string)
 }
 func (m *mangaServiceImpl) MangatownImage(ctx context.Context, mangaId string, chapterId string) (entity.ImageData, error) {
 
-	var returnData entity.ImageData
+	returnData := entity.ImageData{}
 	var dataImages []entity.Image
 	var link string
 
@@ -559,7 +560,7 @@ func getRawImageData(s string) (string, string, int) {
 
 func (m *mangaServiceImpl) MaidmySearch(ctx context.Context, search string) ([]entity.SearchData, error) {
 
-	var returnData []entity.SearchData
+	returnData := []entity.SearchData{}
 
 	c := colly.NewCollector()
 
@@ -589,7 +590,7 @@ func (m *mangaServiceImpl) MaidmySearch(ctx context.Context, search string) ([]e
 }
 func (m *mangaServiceImpl) MaidmyIndex(ctx context.Context, pageNumber string) ([]entity.IndexData, error) {
 
-	var returnData []entity.IndexData
+	returnData := []entity.IndexData{}
 
 	c := colly.NewCollector()
 	c.OnHTML("body > main > div > div.container > div.flexbox4 > div.flexbox4-item", func(e *colly.HTMLElement) {
@@ -620,7 +621,7 @@ func (m *mangaServiceImpl) MaidmyIndex(ctx context.Context, pageNumber string) (
 }
 func (m *mangaServiceImpl) MaidmyDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
 
-	var returnData entity.DetailData
+	returnData := entity.DetailData{}
 	var chapters []entity.Chapter
 
 	c := colly.NewCollector()
@@ -670,7 +671,7 @@ func (m *mangaServiceImpl) MaidmyDetail(ctx context.Context, mangaId string) (en
 }
 func (m *mangaServiceImpl) MaidmyChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
 
-	var data entity.ChapterData
+	data := entity.ChapterData{}
 	var chapters []entity.Chapter
 
 	c := colly.NewCollector()
@@ -697,7 +698,7 @@ func (m *mangaServiceImpl) MaidmyChapter(ctx context.Context, mangaId string) (e
 }
 func (m *mangaServiceImpl) MaidmyImage(ctx context.Context, chapterId string) (entity.ImageData, error) {
 
-	var returnData entity.ImageData
+	returnData := entity.ImageData{}
 	var dataImages []entity.Image
 	c := colly.NewCollector()
 
@@ -723,8 +724,7 @@ func (m *mangaServiceImpl) MaidmyImage(ctx context.Context, chapterId string) (e
 
 func (m *mangaServiceImpl) AsuraComicIndex(ctx context.Context, pageNumber string) ([]entity.IndexData, error) {
 
-	var returnData []entity.IndexData
-
+	returnData := []entity.IndexData{}
 	c := colly.NewCollector()
 	c.SetRequestTimeout(60 * time.Second)
 
@@ -748,7 +748,7 @@ func (m *mangaServiceImpl) AsuraComicIndex(ctx context.Context, pageNumber strin
 
 func (m *mangaServiceImpl) AsuraComicSearch(ctx context.Context, search string) ([]entity.SearchData, error) {
 
-	var returnData []entity.SearchData
+	returnData := []entity.SearchData{}
 
 	pageCount := 3
 	currentPage := 1
@@ -779,7 +779,7 @@ func (m *mangaServiceImpl) AsuraComicSearch(ctx context.Context, search string) 
 
 func (m *mangaServiceImpl) AsuraComicDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
 
-	var returnData entity.DetailData
+	returnData := entity.DetailData{}
 	var chapters []entity.Chapter
 
 	c := colly.NewCollector()
@@ -817,7 +817,7 @@ func (m *mangaServiceImpl) AsuraComicDetail(ctx context.Context, mangaId string)
 
 func (m *mangaServiceImpl) AsuraComicChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
 
-	var data entity.ChapterData
+	data := entity.ChapterData{}
 	var chapters []entity.Chapter
 
 	c := colly.NewCollector()
@@ -847,7 +847,7 @@ func (m *mangaServiceImpl) AsuraComicChapter(ctx context.Context, mangaId string
 
 func (m *mangaServiceImpl) AsuraComicImage(ctx context.Context, chapterId string) (entity.ImageData, error) {
 
-	var returnData entity.ImageData
+	returnData := entity.ImageData{}
 	var dataImages []entity.Image
 
 	c := colly.NewCollector()
@@ -872,7 +872,7 @@ func (m *mangaServiceImpl) AsuraComicImage(ctx context.Context, chapterId string
 
 func (m *mangaServiceImpl) ManganatoSearch(ctx context.Context, search string) ([]entity.SearchData, error) {
 
-	var returnData []entity.SearchData
+	returnData := []entity.SearchData{}
 
 	pageCount := 3
 	currentPage := 1
@@ -905,7 +905,7 @@ func (m *mangaServiceImpl) ManganatoSearch(ctx context.Context, search string) (
 
 func (m *mangaServiceImpl) ManganatoIndex(ctx context.Context, pageNumber string) ([]entity.IndexData, error) {
 
-	var returnData []entity.IndexData
+	returnData := []entity.IndexData{}
 
 	c := colly.NewCollector()
 	c.SetRequestTimeout(60 * time.Second)
@@ -930,7 +930,7 @@ func (m *mangaServiceImpl) ManganatoIndex(ctx context.Context, pageNumber string
 
 func (m *mangaServiceImpl) ManganatoDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
 
-	var returnData entity.DetailData
+	returnData := entity.DetailData{}
 	var chapters []entity.Chapter
 
 	// re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
@@ -973,7 +973,7 @@ func (m *mangaServiceImpl) ManganatoDetail(ctx context.Context, mangaId string) 
 
 func (m *mangaServiceImpl) ManganatoChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
 
-	var data entity.ChapterData
+	data := entity.ChapterData{}
 	var chapters []entity.Chapter
 	// re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
 
@@ -1001,7 +1001,7 @@ func (m *mangaServiceImpl) ManganatoChapter(ctx context.Context, mangaId string)
 
 func (m *mangaServiceImpl) ManganatoImage(ctx context.Context, mangaId string, chapterId string) (entity.ImageData, error) {
 
-	var returnData entity.ImageData
+	returnData := entity.ImageData{}
 	var dataImages []entity.Image
 
 	c := colly.NewCollector()
@@ -1029,7 +1029,7 @@ func (m *mangaServiceImpl) ManganatoImage(ctx context.Context, mangaId string, c
 
 func (m *mangaServiceImpl) ManganeloIndex(ctx context.Context, pageNumber string) ([]entity.IndexData, error) {
 
-	var returnData []entity.IndexData
+	returnData := []entity.IndexData{}
 	// re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
 
 	c := colly.NewCollector()
@@ -1065,7 +1065,7 @@ func (m *mangaServiceImpl) ManganeloIndex(ctx context.Context, pageNumber string
 
 func (m *mangaServiceImpl) ManganeloSearch(ctx context.Context, search string) ([]entity.SearchData, error) {
 
-	var returnData []entity.SearchData
+	returnData := []entity.SearchData{}
 
 	pageCount := 3
 	currentPage := 1
@@ -1099,7 +1099,7 @@ func (m *mangaServiceImpl) ManganeloSearch(ctx context.Context, search string) (
 
 func (m *mangaServiceImpl) ManganeloDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
 
-	var returnData entity.DetailData
+	returnData := entity.DetailData{}
 	var chapters []entity.Chapter
 
 	re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
@@ -1169,7 +1169,7 @@ func (m *mangaServiceImpl) ManganeloDetail(ctx context.Context, mangaId string) 
 
 func (m *mangaServiceImpl) ManganeloChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
 
-	var data entity.ChapterData
+	data := entity.ChapterData{}
 	var chapters []entity.Chapter
 	re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
 
@@ -1211,7 +1211,7 @@ func (m *mangaServiceImpl) ManganeloChapter(ctx context.Context, mangaId string)
 
 func (m *mangaServiceImpl) ManganeloImage(ctx context.Context, mangaId string, chapterId string) (entity.ImageData, error) {
 
-	var returnData entity.ImageData
+	returnData := entity.ImageData{}
 	var dataImages []entity.Image
 
 	c := colly.NewCollector()
@@ -1299,7 +1299,7 @@ func (m *mangaServiceImpl) MangaseeIndex(ctx context.Context) ([]entity.IndexDat
 	jsonData = strings.Split(jsonData[1], "];")
 	cleanData := jsonData[0] + "]"
 
-	var mangaData []MangaseeData
+	mangaData := []MangaseeData{}
 	err := json.Unmarshal([]byte(cleanData), &mangaData)
 	if err != nil {
 		log.Info().Err(err)
@@ -1341,7 +1341,7 @@ func (m *mangaServiceImpl) MangaseeIndex(ctx context.Context) ([]entity.IndexDat
 
 func (m *mangaServiceImpl) MangaseeDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
 
-	var returnData entity.DetailData
+	returnData := entity.DetailData{}
 	var chapters []entity.Chapter
 	var cover, title, summary, baseChapter string
 
@@ -1421,7 +1421,7 @@ func (m *mangaServiceImpl) MangaseeDetail(ctx context.Context, mangaId string) (
 }
 
 func (m *mangaServiceImpl) MangaseeChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
-	var data entity.ChapterData
+	data := entity.ChapterData{}
 	var chapters []entity.Chapter
 
 	var baseChapter string
@@ -1500,7 +1500,7 @@ func generateNumber(number int) string {
 
 func (m *mangaServiceImpl) MangaseeImage(ctx context.Context, mangaId string, chapterId string) (entity.ImageData, error) {
 
-	var returnData entity.ImageData
+	returnData := entity.ImageData{}
 	var dataImages []entity.Image
 
 	var baseImages string
