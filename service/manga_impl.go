@@ -753,7 +753,7 @@ func (m *mangaServiceImpl) AsuraComicIndex(ctx context.Context, pageNumber strin
 	})
 
 	// if err := c.Visit(fmt.Sprintf("https://asuracomics.com/manga/?page=%v&order=update", pageNumber)); err != nil {
-	if err := c.Visit(fmt.Sprintf("https://asuracomics.gg/manga/?page=&v&order=update", pageNumber)); err != nil {
+	if err := c.Visit(fmt.Sprintf("https://asuracomics.gg/manga/?page=%v&v&order=update", pageNumber)); err != nil {
 		// fmt.Println(err)
 		log.Info().Err(err).Msg("ERROR")
 		return nil, err
