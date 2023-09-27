@@ -813,8 +813,8 @@ func (m *mangaServiceImpl) AsuraComicDetail(ctx context.Context, mangaId string)
 
 	c.OnHTML("#chapterlist > ul > li > div.chbox", func(e *colly.HTMLElement) {
 
-		fmt.Println("link", strings.Split(e.ChildAttr("div.eph-num > a", "href"), "/")[3])
-		fmt.Println("chapname", re.FindAllString(e.ChildText("div.eph-num > a > span.chapternum"), -1)[0])
+		// fmt.Println("link", strings.Split(e.ChildAttr("div.eph-num > a", "href"), "/")[3])
+		// fmt.Println("chapname", re.FindAllString(e.ChildText("div.eph-num > a > span.chapternum"), -1)[0])
 
 		chapters = append(chapters, entity.Chapter{
 			Id:   strings.Split(e.ChildAttr("div.eph-num > a", "href"), "/")[3],
@@ -822,7 +822,7 @@ func (m *mangaServiceImpl) AsuraComicDetail(ctx context.Context, mangaId string)
 		})
 	})
 
-	if err := c.Visit(fmt.Sprintf("https://asuracomics.com/manga/%v", mangaId)); err != nil {
+	if err := c.Visit(fmt.Sprintf("https://asuracomics.gg/manga/%v", mangaId)); err != nil {
 		log.Info().Err(err).Msg("ERROR")
 		return returnData, nil
 	}
@@ -842,8 +842,8 @@ func (m *mangaServiceImpl) AsuraComicChapter(ctx context.Context, mangaId string
 
 	c.OnHTML("#chapterlist > ul > li > div.chbox", func(e *colly.HTMLElement) {
 
-		fmt.Println("link", strings.Split(e.ChildAttr("div.eph-num > a", "href"), "/")[3])
-		fmt.Println("chapname", re.FindAllString(e.ChildText("div.eph-num > a > span.chapternum"), -1)[0])
+		// fmt.Println("link", strings.Split(e.ChildAttr("div.eph-num > a", "href"), "/")[3])
+		// fmt.Println("chapname", re.FindAllString(e.ChildText("div.eph-num > a > span.chapternum"), -1)[0])
 
 		chapters = append(chapters, entity.Chapter{
 			Id:   strings.Split(e.ChildAttr("div.eph-num > a", "href"), "/")[3],
@@ -851,7 +851,7 @@ func (m *mangaServiceImpl) AsuraComicChapter(ctx context.Context, mangaId string
 		})
 	})
 
-	if err := c.Visit(fmt.Sprintf("https://asuracomics.com/manga/%v", mangaId)); err != nil {
+	if err := c.Visit(fmt.Sprintf("https://asuracomics.gg/manga/%v", mangaId)); err != nil {
 		log.Info().Err(err).Msg("ERROR")
 		return data, nil
 	}
@@ -874,7 +874,7 @@ func (m *mangaServiceImpl) AsuraComicImage(ctx context.Context, chapterId string
 		})
 	})
 
-	if err := c.Visit(fmt.Sprintf("https://asuracomics.com/%v", chapterId)); err != nil {
+	if err := c.Visit(fmt.Sprintf("https://asuracomics.gg/%v", chapterId)); err != nil {
 		log.Info().Err(err)
 		return returnData, nil
 	}
