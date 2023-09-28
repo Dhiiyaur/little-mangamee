@@ -1020,12 +1020,16 @@ func (m *mangaServiceImpl) ManganatoImage(ctx context.Context, mangaId string, c
 	returnData := entity.ImageData{}
 	var dataImages []entity.Image
 
+	api := "https://little-mangamee.vercel.app/api/manga/"
+
 	c := colly.NewCollector()
 	c.SetRequestTimeout(60 * time.Second)
 
 	c.OnHTML("body > div.body-site > div.container-chapter-reader > img", func(e *colly.HTMLElement) {
+
 		dataImages = append(dataImages, entity.Image{
-			Image: e.Attr("src"),
+			// Image: e.Attr("src"),
+			Image: fmt.Sprintf("%vproxy?id=%v", api, e.Attr("src")),
 		})
 
 	})
