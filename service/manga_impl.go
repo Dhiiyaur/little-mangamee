@@ -76,7 +76,7 @@ func (m *mangaServiceImpl) MangabatIndex(ctx context.Context, pageNumber string)
 func (m *mangaServiceImpl) MangabatDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
 
 	returnData := entity.DetailData{}
-	var chapters []entity.Chapter
+	chapters := []entity.Chapter{}
 
 	c := colly.NewCollector()
 
@@ -112,7 +112,7 @@ func (m *mangaServiceImpl) MangabatDetail(ctx context.Context, mangaId string) (
 func (m *mangaServiceImpl) MangabatChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
 
 	data := entity.ChapterData{}
-	var chapters []entity.Chapter
+	chapters := []entity.Chapter{}
 
 	c := colly.NewCollector()
 
@@ -140,7 +140,7 @@ func (m *mangaServiceImpl) MangabatChapter(ctx context.Context, mangaId string) 
 func (m *mangaServiceImpl) MangabatImage(ctx context.Context, chapterId string) (entity.ImageData, error) {
 
 	returnData := entity.ImageData{}
-	var dataImages []entity.Image
+	dataImages := []entity.Image{}
 	var name string
 
 	c := colly.NewCollector()
@@ -245,7 +245,7 @@ func (m *mangaServiceImpl) MangareadIndex(ctx context.Context, pageNumber string
 func (m *mangaServiceImpl) MangareadDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
 
 	returnData := entity.DetailData{}
-	var chapters []entity.Chapter
+	chapters := []entity.Chapter{}
 	limit := 0
 
 	c := colly.NewCollector()
@@ -290,7 +290,7 @@ func (m *mangaServiceImpl) MangareadDetail(ctx context.Context, mangaId string) 
 func (m *mangaServiceImpl) MangareadChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
 
 	data := entity.ChapterData{}
-	var chapters []entity.Chapter
+	chapters := []entity.Chapter{}
 
 	c := colly.NewCollector()
 
@@ -317,7 +317,7 @@ func (m *mangaServiceImpl) MangareadChapter(ctx context.Context, mangaId string)
 func (m *mangaServiceImpl) MangareadImage(ctx context.Context, mangaId string, chapterId string) (entity.ImageData, error) {
 
 	returnData := entity.ImageData{}
-	var dataImages []entity.Image
+	dataImages := []entity.Image{}
 	c := colly.NewCollector()
 
 	c.OnHTML(".wp-manga-chapter-img", func(e *colly.HTMLElement) {
@@ -400,7 +400,7 @@ func (m *mangaServiceImpl) MangatownIndex(ctx context.Context, pageNumber string
 func (m *mangaServiceImpl) MangatownDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
 
 	returnData := entity.DetailData{}
-	var chapters []entity.Chapter
+	chapters := []entity.Chapter{}
 
 	c := colly.NewCollector()
 
@@ -445,7 +445,7 @@ func (m *mangaServiceImpl) MangatownDetail(ctx context.Context, mangaId string) 
 func (m *mangaServiceImpl) MangatownChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
 
 	data := entity.ChapterData{}
-	var chapters []entity.Chapter
+	chapters := []entity.Chapter{}
 
 	c := colly.NewCollector()
 
@@ -479,7 +479,7 @@ func (m *mangaServiceImpl) MangatownChapter(ctx context.Context, mangaId string)
 func (m *mangaServiceImpl) MangatownImage(ctx context.Context, mangaId string, chapterId string) (entity.ImageData, error) {
 
 	returnData := entity.ImageData{}
-	var dataImages []entity.Image
+	dataImages := []entity.Image{}
 	var link string
 
 	c := colly.NewCollector()
@@ -634,7 +634,7 @@ func (m *mangaServiceImpl) MaidmyIndex(ctx context.Context, pageNumber string) (
 func (m *mangaServiceImpl) MaidmyDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
 
 	returnData := entity.DetailData{}
-	var chapters []entity.Chapter
+	chapters := []entity.Chapter{}
 
 	c := colly.NewCollector()
 
@@ -686,7 +686,7 @@ func (m *mangaServiceImpl) MaidmyDetail(ctx context.Context, mangaId string) (en
 func (m *mangaServiceImpl) MaidmyChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
 
 	data := entity.ChapterData{}
-	var chapters []entity.Chapter
+	chapters := []entity.Chapter{}
 
 	c := colly.NewCollector()
 
@@ -713,7 +713,7 @@ func (m *mangaServiceImpl) MaidmyChapter(ctx context.Context, mangaId string) (e
 func (m *mangaServiceImpl) MaidmyImage(ctx context.Context, chapterId string) (entity.ImageData, error) {
 
 	returnData := entity.ImageData{}
-	var dataImages []entity.Image
+	dataImages := []entity.Image{}
 	c := colly.NewCollector()
 
 	c.OnHTML(".reader-area img", func(e *colly.HTMLElement) {
@@ -796,7 +796,7 @@ func (m *mangaServiceImpl) AsuraComicSearch(ctx context.Context, search string) 
 func (m *mangaServiceImpl) AsuraComicDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
 
 	returnData := entity.DetailData{}
-	var chapters []entity.Chapter
+	chapters := []entity.Chapter{}
 
 	c := colly.NewCollector()
 	c.SetRequestTimeout(60 * time.Second)
@@ -834,7 +834,7 @@ func (m *mangaServiceImpl) AsuraComicDetail(ctx context.Context, mangaId string)
 func (m *mangaServiceImpl) AsuraComicChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
 
 	data := entity.ChapterData{}
-	var chapters []entity.Chapter
+	chapters := []entity.Chapter{}
 
 	c := colly.NewCollector()
 	c.SetRequestTimeout(60 * time.Second)
@@ -864,7 +864,7 @@ func (m *mangaServiceImpl) AsuraComicChapter(ctx context.Context, mangaId string
 func (m *mangaServiceImpl) AsuraComicImage(ctx context.Context, chapterId string) (entity.ImageData, error) {
 
 	returnData := entity.ImageData{}
-	var dataImages []entity.Image
+	dataImages := []entity.Image{}
 
 	c := colly.NewCollector()
 	c.SetRequestTimeout(60 * time.Second)
@@ -947,7 +947,7 @@ func (m *mangaServiceImpl) ManganatoIndex(ctx context.Context, pageNumber string
 func (m *mangaServiceImpl) ManganatoDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
 
 	returnData := entity.DetailData{}
-	var chapters []entity.Chapter
+	chapters := []entity.Chapter{}
 
 	// re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
 
@@ -990,7 +990,7 @@ func (m *mangaServiceImpl) ManganatoDetail(ctx context.Context, mangaId string) 
 func (m *mangaServiceImpl) ManganatoChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
 
 	data := entity.ChapterData{}
-	var chapters []entity.Chapter
+	chapters := []entity.Chapter{}
 	// re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
 
 	c := colly.NewCollector()
@@ -1018,7 +1018,7 @@ func (m *mangaServiceImpl) ManganatoChapter(ctx context.Context, mangaId string)
 func (m *mangaServiceImpl) ManganatoImage(ctx context.Context, mangaId string, chapterId string) (entity.ImageData, error) {
 
 	returnData := entity.ImageData{}
-	var dataImages []entity.Image
+	dataImages := []entity.Image{}
 
 	api := "https://little-mangamee.vercel.app/api/manga/"
 
@@ -1120,7 +1120,7 @@ func (m *mangaServiceImpl) ManganeloSearch(ctx context.Context, search string) (
 func (m *mangaServiceImpl) ManganeloDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
 
 	returnData := entity.DetailData{}
-	var chapters []entity.Chapter
+	chapters := []entity.Chapter{}
 
 	re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
 
@@ -1190,7 +1190,7 @@ func (m *mangaServiceImpl) ManganeloDetail(ctx context.Context, mangaId string) 
 func (m *mangaServiceImpl) ManganeloChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
 
 	data := entity.ChapterData{}
-	var chapters []entity.Chapter
+	chapters := []entity.Chapter{}
 	re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
 
 	c := colly.NewCollector()
@@ -1203,13 +1203,14 @@ func (m *mangaServiceImpl) ManganeloChapter(ctx context.Context, mangaId string)
 		})
 	})
 
-	if err := c.Visit(fmt.Sprintf("https://manganelo.com/%v", mangaId)); err != nil {
-		log.Info().Err(err)
+	if err := c.Visit(fmt.Sprintf("https://m.manganelo.com/%v", mangaId)); err != nil {
+		log.Info().Err(err).Msg("ERROR")
 		return data, err
 	}
-	data.OriginalServer = fmt.Sprintf("https://manganelo.com/%v", mangaId)
 
+	data.OriginalServer = fmt.Sprintf("https://m.manganelo.com/%v", mangaId)
 	if len(chapters) == 0 {
+
 		c.OnHTML("body > div.body-site > div.container.container-main > div.container-main-left > div.panel-story-chapter-list > ul > li.a-h", func(e *colly.HTMLElement) {
 			chapters = append(chapters, entity.Chapter{
 				Name: re.FindAllString(e.ChildText("a"), -1)[0],
@@ -1222,7 +1223,6 @@ func (m *mangaServiceImpl) ManganeloChapter(ctx context.Context, mangaId string)
 			return data, err
 		}
 		data.OriginalServer = fmt.Sprintf("https://chapmanganelo.com/%v", mangaId)
-
 	}
 
 	data.Chapters = chapters
@@ -1232,14 +1232,16 @@ func (m *mangaServiceImpl) ManganeloChapter(ctx context.Context, mangaId string)
 func (m *mangaServiceImpl) ManganeloImage(ctx context.Context, mangaId string, chapterId string) (entity.ImageData, error) {
 
 	returnData := entity.ImageData{}
-	var dataImages []entity.Image
+	dataImages := []entity.Image{}
+	api := "https://little-mangamee.vercel.app/api/manga/"
 
 	c := colly.NewCollector()
 	c.SetRequestTimeout(60 * time.Second)
 
 	c.OnHTML("body > div.body-site > div.container-chapter-reader > img.reader-content", func(e *colly.HTMLElement) {
 		dataImages = append(dataImages, entity.Image{
-			Image: e.Attr("src"),
+			// Image: e.Attr("src"),
+			Image: fmt.Sprintf("%vproxy?id=%v", api, e.Attr("src")),
 		})
 
 	})
@@ -1362,7 +1364,7 @@ func (m *mangaServiceImpl) MangaseeIndex(ctx context.Context) ([]entity.IndexDat
 func (m *mangaServiceImpl) MangaseeDetail(ctx context.Context, mangaId string) (entity.DetailData, error) {
 
 	returnData := entity.DetailData{}
-	var chapters []entity.Chapter
+	chapters := []entity.Chapter{}
 	var cover, title, summary, baseChapter string
 
 	type MangaseeDataChapter struct {
@@ -1442,7 +1444,7 @@ func (m *mangaServiceImpl) MangaseeDetail(ctx context.Context, mangaId string) (
 
 func (m *mangaServiceImpl) MangaseeChapter(ctx context.Context, mangaId string) (entity.ChapterData, error) {
 	data := entity.ChapterData{}
-	var chapters []entity.Chapter
+	chapters := []entity.Chapter{}
 
 	var baseChapter string
 
@@ -1521,7 +1523,7 @@ func generateNumber(number int) string {
 func (m *mangaServiceImpl) MangaseeImage(ctx context.Context, mangaId string, chapterId string) (entity.ImageData, error) {
 
 	returnData := entity.ImageData{}
-	var dataImages []entity.Image
+	dataImages := []entity.Image{}
 
 	var baseImages string
 
