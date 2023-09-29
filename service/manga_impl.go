@@ -59,15 +59,17 @@ func (m *mangaServiceImpl) MangabatIndex(ctx context.Context, pageNumber string)
 		tempMangaID := strings.Split(e.ChildAttr("a.item-img", "href"), "/")
 
 		returnData = append(returnData, entity.IndexData{
-			Title:          e.ChildAttr("img", "alt"),
-			Id:             tempMangaID[len(tempMangaID)-1],
-			Cover:          e.ChildAttr("a > img", "src"),
-			LastChapter:    tempLastChapter[len(tempLastChapter)-1],
-			OriginalServer: "https://m.mangabat.com/manga-list-all/" + pageNumber + "/",
+			Title:       e.ChildAttr("img", "alt"),
+			Id:          tempMangaID[len(tempMangaID)-1],
+			Cover:       e.ChildAttr("a > img", "src"),
+			LastChapter: tempLastChapter[len(tempLastChapter)-1],
+			// OriginalServer: "https://m.mangabat.com/manga-list-all/" + pageNumber + "/",
+			OriginalServer: "https://m.mangabat.com/advanced_search?s=all&g_e=_41_32_&page=" + pageNumber,
 		})
 	})
 
-	if err := c.Visit("https://m.mangabat.com/manga-list-all/" + pageNumber + "/"); err != nil {
+	// if err := c.Visit("https://m.mangabat.com/manga-list-all/" + pageNumber + "/"); err != nil {
+	if err := c.Visit("https://m.mangabat.com/advanced_search?s=all&g_e=_41_32_&page=" + pageNumber); err != nil {
 		log.Info().Err(err).Msg("ERROR")
 		return nil, err
 	}
@@ -1557,8 +1559,6 @@ func (m *mangaServiceImpl) MangaseeImage(ctx context.Context, mangaId string, ch
 			baseImages = re.FindString(scriptContent)
 		}
 	})
-
-	// https: //www.mangasee123.com/read-online/Onepunch-Man-chapter-189-index-2.html
 
 	if err := c.Visit(fmt.Sprintf("https://www.manga4life.com/read-online/%v-chapter-%v-index-%v.html", mangaId, cleanChapterId, index)); err != nil {
 		// if err := c.Visit(fmt.Sprintf("https://www.mangasee123.com/read-online/%v-chapter-%v.html", mangaId, chapterId)); err != nil {
