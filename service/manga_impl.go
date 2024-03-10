@@ -743,20 +743,27 @@ func (m *mangaServiceImpl) AsuraComicIndex(ctx context.Context, pageNumber strin
 	returnData := []entity.IndexData{}
 	c := colly.NewCollector()
 	c.SetRequestTimeout(60 * time.Second)
+	c.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+	c.OnRequest(func(r *colly.Request) {
+		r.Headers.Set("Accept", "*/*")
+		r.Headers.Set("Referer", "https://asuratoon.com/")
+		r.Headers.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36")
+	})
 
 	c.OnHTML("#content > div.wrapper > div.postbody > div.bixbox > div.mrgn > div.listupd > div.bs > div.bsx", func(e *colly.HTMLElement) {
 		returnData = append(returnData, entity.IndexData{
-			Title:          e.ChildText("a > div.bigor > div.tt"),
-			Id:             strings.Split(e.ChildAttr("a", "href"), "/")[4],
-			Cover:          e.ChildAttr("a > div.limit > img", "src"),
-			LastChapter:    e.ChildText("a > div.bigor > div.adds > div.epxs"),
-			OriginalServer: fmt.Sprintf("https://asuracomics.com/manga/?page=%v&order=update", pageNumber),
+			Title:       e.ChildText("a > div.bigor > div.tt"),
+			Id:          strings.Split(e.ChildAttr("a", "href"), "/")[4],
+			Cover:       e.ChildAttr("a > div.limit > img", "src"),
+			LastChapter: e.ChildText("a > div.bigor > div.adds > div.epxs"),
+			// https://asuratoon.com/?page=%v&order=update
+			// OriginalServer: fmt.Sprintf("https://asuracomics.com/manga/?page=%v&order=update", pageNumber),
+			OriginalServer: fmt.Sprintf("https://asuratoon.com/?page=%v&order=update", pageNumber),
 		})
 	})
 
-	// if err := c.Visit(fmt.Sprintf("https://asuracomics.com/manga/?page=%v&order=update", pageNumber)); err != nil {
+	// if err := c.Visit(fmt.Sprintf("https://asuracomics.gg/manga/?page=%v&v&order=update", pageNumber)); err != nil {
 	if err := c.Visit(fmt.Sprintf("https://asuracomics.gg/manga/?page=%v&v&order=update", pageNumber)); err != nil {
-		// fmt.Println(err)
 		log.Info().Err(err).Msg("ERROR")
 		return nil, err
 	}
@@ -843,9 +850,6 @@ func (m *mangaServiceImpl) AsuraComicChapter(ctx context.Context, mangaId string
 	re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
 
 	c.OnHTML("#chapterlist > ul > li > div.chbox", func(e *colly.HTMLElement) {
-
-		// fmt.Println("link", strings.Split(e.ChildAttr("div.eph-num > a", "href"), "/")[3])
-		// fmt.Println("chapname", re.FindAllString(e.ChildText("div.eph-num > a > span.chapternum"), -1)[0])
 
 		chapters = append(chapters, entity.Chapter{
 			Id:   strings.Split(e.ChildAttr("div.eph-num > a", "href"), "/")[3],
@@ -993,14 +997,12 @@ func (m *mangaServiceImpl) ManganatoChapter(ctx context.Context, mangaId string)
 
 	data := entity.ChapterData{}
 	chapters := []entity.Chapter{}
-	// re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
 
 	c := colly.NewCollector()
 	c.SetRequestTimeout(60 * time.Second)
 
 	c.OnHTML("body > div.body-site > div.container.container-main > div.container-main-left > div.panel-story-chapter-list > ul > li.a-h", func(e *colly.HTMLElement) {
 		chapters = append(chapters, entity.Chapter{
-			// Name: re.FindAllString(e.ChildText("a"), -1)[0],
 			Name: e.ChildText("a"),
 			Id:   strings.Split(e.ChildAttr("a", "href"), "/")[4],
 		})
@@ -1058,15 +1060,6 @@ func (m *mangaServiceImpl) ManganeloIndex(ctx context.Context, pageNumber string
 	c.SetRequestTimeout(60 * time.Second)
 
 	c.OnHTML("body > div.body-site > div.container.container-main > div.panel-content-genres > div.content-genres-item", func(e *colly.HTMLElement) {
-
-		// tmpLastChapter := re.FindAllString(e.ChildText("div.genres-item-info > a.genres-item-chap.text-nowrap.a-h"), -1)
-		// var lastChapter string
-		// if len(tmpLastChapter) > 0 {
-		// 	lastChapter = tmpLastChapter[1]
-		// } else {
-		// 	lastChapter = tmpLastChapter[0]
-		// }
-
 		lastChapter := e.ChildText("div.genres-item-info > a.genres-item-chap.text-nowrap.a-h")
 		returnData = append(returnData, entity.IndexData{
 			Title:          e.ChildText("div.genres-item-info > h3"),
@@ -1309,11 +1302,8 @@ func (m *mangaServiceImpl) MangaseeIndex(ctx context.Context) ([]entity.IndexDat
 		if match == "" {
 			match = re.FindString(scriptContent)
 		}
-		// fmt.Println("what")
-		// fmt.Println(match)
 	})
 
-	// if err := c.Visit("https://www.mangasee123.com/search/?sort=lt&desc=true"); err != nil {
 	if err := c.Visit("https://www.manga4life.com/search/?sort=y&desc=true"); err != nil {
 		log.Info().Err(err).Msg("ERROR")
 		return nil, err
