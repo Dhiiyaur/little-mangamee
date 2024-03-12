@@ -23,7 +23,6 @@ func NewMangaService() MangaService {
 
 func (m *mangaServiceImpl) MangabatSearch(ctx context.Context, search string) ([]entity.SearchData, error) {
 
-	// var returnData []entity.SearchData
 	returnData := []entity.SearchData{}
 
 	c := colly.NewCollector()
@@ -148,8 +147,6 @@ func (m *mangaServiceImpl) MangabatImage(ctx context.Context, chapterId string) 
 	c := colly.NewCollector()
 
 	c.OnHTML(".img-content", func(e *colly.HTMLElement) {
-
-		// fmt.Println(e.Attr("src"))
 		api := "https://little-mangamee.vercel.app/api/manga/"
 		dataImages = append(dataImages, entity.Image{
 			// Image: fmt.Sprintf("%vproxy?id=%v", "https://api.mangamee.space/manga/", e.Attr("src")),
@@ -756,7 +753,6 @@ func (m *mangaServiceImpl) AsuraComicIndex(ctx context.Context, pageNumber strin
 			Id:          strings.Split(e.ChildAttr("a", "href"), "/")[4],
 			Cover:       e.ChildAttr("a > div.limit > img", "src"),
 			LastChapter: e.ChildText("a > div.bigor > div.adds > div.epxs"),
-			// https://asuratoon.com/?page=%v&order=update
 			// OriginalServer: fmt.Sprintf("https://asuracomics.com/manga/?page=%v&order=update", pageNumber),
 			OriginalServer: fmt.Sprintf("https://asuratoon.com/?page=%v&order=update", pageNumber),
 		})
@@ -821,10 +817,6 @@ func (m *mangaServiceImpl) AsuraComicDetail(ctx context.Context, mangaId string)
 	})
 
 	c.OnHTML("#chapterlist > ul > li > div.chbox", func(e *colly.HTMLElement) {
-
-		// fmt.Println("link", strings.Split(e.ChildAttr("div.eph-num > a", "href"), "/")[3])
-		// fmt.Println("chapname", re.FindAllString(e.ChildText("div.eph-num > a > span.chapternum"), -1)[0])
-
 		chapters = append(chapters, entity.Chapter{
 			Id:   strings.Split(e.ChildAttr("div.eph-num > a", "href"), "/")[3],
 			Name: re.FindAllString(e.ChildText("div.eph-num > a > span.chapternum"), -1)[0],
@@ -955,8 +947,6 @@ func (m *mangaServiceImpl) ManganatoDetail(ctx context.Context, mangaId string) 
 	returnData := entity.DetailData{}
 	chapters := []entity.Chapter{}
 
-	// re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
-
 	c := colly.NewCollector()
 	c.SetRequestTimeout(60 * time.Second)
 
@@ -1032,7 +1022,6 @@ func (m *mangaServiceImpl) ManganatoImage(ctx context.Context, mangaId string, c
 	c.OnHTML("body > div.body-site > div.container-chapter-reader > img", func(e *colly.HTMLElement) {
 
 		dataImages = append(dataImages, entity.Image{
-			// Image: e.Attr("src"),
 			Image: fmt.Sprintf("%vproxy?id=%v", api, e.Attr("src")),
 		})
 
@@ -1054,8 +1043,6 @@ func (m *mangaServiceImpl) ManganatoImage(ctx context.Context, mangaId string, c
 func (m *mangaServiceImpl) ManganeloIndex(ctx context.Context, pageNumber string) ([]entity.IndexData, error) {
 
 	returnData := []entity.IndexData{}
-	// re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
-
 	c := colly.NewCollector()
 	c.SetRequestTimeout(60 * time.Second)
 
@@ -1235,7 +1222,6 @@ func (m *mangaServiceImpl) ManganeloImage(ctx context.Context, mangaId string, c
 
 	c.OnHTML("body > div.body-site > div.container-chapter-reader > img.reader-content", func(e *colly.HTMLElement) {
 		dataImages = append(dataImages, entity.Image{
-			// Image: e.Attr("src"),
 			Image: fmt.Sprintf("%vproxy?id=%v", api, e.Attr("src")),
 		})
 
@@ -1336,9 +1322,6 @@ func (m *mangaServiceImpl) MangaseeIndex(ctx context.Context) ([]entity.IndexDat
 				lastChapter = fmt.Sprintf("%v.%v", lastChapter, splitChapter[5])
 			}
 			lastChapter = strings.TrimLeft(lastChapter, "0")
-
-			// lastChapter = strings.TrimPrefix(v.Chapter, "10")
-			// lastChapter = strings.TrimSuffix(lastChapter, "0")
 		}
 
 		returnData = append(returnData, entity.IndexData{
@@ -1416,9 +1399,6 @@ func (m *mangaServiceImpl) MangaseeDetail(ctx context.Context, mangaId string) (
 			chapterName = fmt.Sprintf("%v.%v", chapterName, splitChapter[5])
 		}
 		chapterName = strings.TrimLeft(chapterName, "0")
-		// v.Chapter = strings.TrimPrefix(v.Chapter, "10")
-		// v.Chapter = strings.TrimSuffix(v.Chapter, "0")
-
 		chapters = append(chapters, entity.Chapter{
 			Name: chapterName,
 			Id:   v.Chapter,
@@ -1485,21 +1465,10 @@ func (m *mangaServiceImpl) MangaseeChapter(ctx context.Context, mangaId string) 
 			chapterName = fmt.Sprintf("%v.%v", chapterName, splitChapter[5])
 		}
 		chapterName = strings.TrimLeft(chapterName, "0")
-		// v.Chapter = strings.TrimPrefix(v.Chapter, "10")
-		// v.Chapter = strings.TrimSuffix(v.Chapter, "0")
-
 		chapters = append(chapters, entity.Chapter{
 			Name: chapterName,
 			Id:   v.Chapter,
 		})
-
-		// v.Chapter = strings.TrimPrefix(v.Chapter, "10")
-		// v.Chapter = strings.TrimSuffix(v.Chapter, "0")
-
-		// chapters = append(chapters, entity.Chapter{
-		// 	Name: v.Chapter,
-		// 	Id:   v.Chapter,
-		// })
 	}
 
 	data.Chapters = chapters
